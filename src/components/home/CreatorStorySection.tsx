@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Heart, Target, Lightbulb } from 'lucide-react';
-import profileAvatar from '@/assets/profile-avatar.jpg';
+import { AnimatedCreatorProfile } from './AnimatedCreatorProfile';
 
 export function CreatorStorySection() {
   return (
@@ -18,19 +18,9 @@ export function CreatorStorySection() {
             </h2>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-8"
-          >
-            <img
-              src={profileAvatar}
-              alt="Creator"
-              className="w-24 h-24 rounded-full mx-auto border-2 border-primary shadow-[0_0_30px_hsl(217_91%_60%/0.3)]"
-            />
-          </motion.div>
+          <div className="mb-10">
+            <AnimatedCreatorProfile />
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
