@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Package, Heart, DollarSign, Plus, Trash2 } from 'lucide-react';
+import { Users, Package, Heart, DollarSign, Plus, Trash2, Upload, Image, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
+import { Label } from '@/components/ui/label';
 
 export default function Admin() {
   const { user, isAdmin, loading } = useAuth();
@@ -19,6 +20,11 @@ export default function Admin() {
   const [products, setProducts] = useState<any[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({ title: '', description: '', price: 0, category: '' });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [productFile, setProductFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) navigate('/');
@@ -39,19 +45,62 @@ export default function Admin() {
     setProducts(p || []);
   };
 
+  const uploadFile = async (file: File, bucket: string): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const { error } = await supabase.storage.from(bucket).upload(fileName, file);
+    if (error) {
+      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
+      return null;
+    }
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
+    return urlData.publicUrl;
+  };
+
   const addProduct = async () => {
     if (!newProduct.title || newProduct.price < 1) {
       toast({ title: 'Fill required fields', variant: 'destructive' });
       return;
     }
-    const { error } = await supabase.from('products').insert(newProduct);
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Product added!' });
-      setNewProduct({ title: '', description: '', price: 0, category: '' });
-      setShowAddProduct(false);
-      fetchData();
+    
+    setUploading(true);
+    let image_url: string | null = null;
+    let file_url: string | null = null;
+
+    try {
+      if (imageFile) {
+        image_url = await uploadFile(imageFile, 'product-images');
+      }
+      if (productFile) {
+        const fileExt = productFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const { error } = await supabase.storage.from('product-files').upload(fileName, productFile);
+        if (error) {
+          toast({ title: 'File upload failed', description: error.message, variant: 'destructive' });
+          setUploading(false);
+          return;
+        }
+        file_url = fileName; // Store just the filename for private bucket
+      }
+
+      const { error } = await supabase.from('products').insert({
+        ...newProduct,
+        image_url,
+        file_url
+      });
+      
+      if (error) {
+        toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      } else {
+        toast({ title: 'Product added!' });
+        setNewProduct({ title: '', description: '', price: 0, category: '' });
+        setImageFile(null);
+        setProductFile(null);
+        setShowAddProduct(false);
+        fetchData();
+      }
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -94,19 +143,88 @@ export default function Admin() {
                 </div>
                 {showAddProduct && (
                   <div className="space-y-3 mb-4 p-4 border border-border rounded-lg">
-                    <Input placeholder="Title" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
+                    <Input placeholder="Title *" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
                     <Textarea placeholder="Description" value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
                     <div className="grid grid-cols-2 gap-3">
-                      <Input type="number" placeholder="Price" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
+                      <Input type="number" placeholder="Price *" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
                       <Input placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} />
                     </div>
-                    <GlowButton onClick={addProduct} className="w-full">Save Product</GlowButton>
+                    
+                    {/* Image Upload */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Image className="w-4 h-4" /> Product Image
+                      </Label>
+                      <input
+                        ref={imageInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      />
+                      <div 
+                        onClick={() => imageInputRef.current?.click()}
+                        className="border-2 border-dashed border-border rounded-lg p-4 cursor-pointer hover:border-primary/50 transition-colors text-center"
+                      >
+                        {imageFile ? (
+                          <p className="text-sm text-primary">{imageFile.name}</p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">Click to upload image</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* File Upload */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
+                        <FileText className="w-4 h-4" /> Digital Product File (ZIP, PDF, etc.)
+                      </Label>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => setProductFile(e.target.files?.[0] || null)}
+                      />
+                      <div 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed border-border rounded-lg p-4 cursor-pointer hover:border-primary/50 transition-colors text-center"
+                      >
+                        {productFile ? (
+                          <p className="text-sm text-primary">{productFile.name}</p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">Click to upload file</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <GlowButton onClick={addProduct} className="w-full" disabled={uploading}>
+                      {uploading ? (
+                        <><Upload className="w-4 h-4 animate-spin" /> Uploading...</>
+                      ) : (
+                        'Save Product'
+                      )}
+                    </GlowButton>
                   </div>
                 )}
                 <div className="space-y-2 max-h-[300px] overflow-y-auto">
                   {products.map((p) => (
                     <div key={p.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                      <div><p className="font-medium">{p.title}</p><p className="text-sm text-muted-foreground">₹{p.price}</p></div>
+                      <div className="flex items-center gap-3">
+                        {p.image_url ? (
+                          <img src={p.image_url} alt={p.title} className="w-10 h-10 rounded object-cover" />
+                        ) : (
+                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                            <Package className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium">{p.title}</p>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>₹{p.price}</span>
+                            {p.file_url && <span className="text-green-500 flex items-center gap-1"><FileText className="w-3 h-3" /> File</span>}
+                          </div>
+                        </div>
+                      </div>
                       <button onClick={() => deleteProduct(p.id)} className="text-destructive hover:bg-destructive/10 p-2 rounded"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   ))}
