@@ -14,6 +14,7 @@ import { TechStackSection } from '@/components/home/TechStackSection';
 import { RoadmapSection } from '@/components/home/RoadmapSection';
 import { MobileCTA } from '@/components/home/MobileCTA';
 import { AnimatedStat } from '@/components/home/AnimatedStat';
+import { NewsletterSection } from '@/components/home/NewsletterSection';
 
 export default function Index() {
   const stats = [
@@ -141,6 +142,9 @@ export default function Index() {
 
       {/* Roadmap */}
       <RoadmapSection />
+
+      {/* Newsletter */}
+      <NewsletterSection />
 
       {/* Mobile sticky CTA */}
       <MobileCTA />
