@@ -1,15 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Code, Github, Twitter, Linkedin, Heart } from 'lucide-react';
 
 export function Footer() {
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
+
+  const linkClass = (path: string) =>
+    `text-sm transition-all duration-200 hover:text-primary hover:translate-x-1 inline-block ${
+      isActive(path) ? 'text-primary font-medium' : 'text-muted-foreground'
+    }`;
+
   return (
     <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary group-hover:shadow-lg group-hover:shadow-primary/25 transition-shadow">
                 <Code className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold glow-text">Next Developer</span>
@@ -18,13 +27,13 @@ export function Footer() {
               Learn. Build. Grow. Your journey to becoming a better developer starts here.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary hover:scale-110 transition-all">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary hover:scale-110 transition-all">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary hover:scale-110 transition-all">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -35,17 +44,17 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/support" className={linkClass('/support')}>
                   Support Me
                 </Link>
               </li>
               <li>
-                <Link to="/membership" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/membership" className={linkClass('/membership')}>
                   Membership
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/shop" className={linkClass('/shop')}>
                   Shop
                 </Link>
               </li>
@@ -57,19 +66,19 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/blog" className={linkClass('/blog')}>
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/tutorials" className={linkClass('/tutorials')}>
                   Tutorials
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/docs" className={linkClass('/docs')}>
                   Documentation
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -79,19 +88,19 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/privacy" className={linkClass('/privacy')}>
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/terms" className={linkClass('/terms')}>
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link to="/refund" className={linkClass('/refund')}>
                   Refund Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
