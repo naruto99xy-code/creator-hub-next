@@ -6,6 +6,14 @@ import { motion } from 'framer-motion';
 import { Heart, Users, Package, Code, Zap, Star, Coffee, Crown } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 import profileAvatar from '@/assets/profile-avatar.jpg';
+import { FeaturesSection } from '@/components/home/FeaturesSection';
+import { MembershipBenefitsSection } from '@/components/home/MembershipBenefitsSection';
+import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { CreatorStorySection } from '@/components/home/CreatorStorySection';
+import { TechStackSection } from '@/components/home/TechStackSection';
+import { RoadmapSection } from '@/components/home/RoadmapSection';
+import { MobileCTA } from '@/components/home/MobileCTA';
+import { AnimatedStat } from '@/components/home/AnimatedStat';
 
 export default function Index() {
   const stats = [
@@ -54,11 +62,7 @@ export default function Index() {
                 </div>
                 <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-border">
                   {stats.map((stat, i) => (
-                    <div key={i} className="text-center">
-                      <stat.icon className="w-5 h-5 mx-auto mb-1 text-primary" />
-                      <div className="text-lg font-bold">{stat.value}</div>
-                      <div className="text-xs text-muted-foreground">{stat.label}</div>
-                    </div>
+                    <AnimatedStat key={i} icon={stat.icon} value={stat.value} label={stat.label} />
                   ))}
                 </div>
               </GlassCard>
@@ -95,6 +99,9 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
+      <FeaturesSection />
+
+      {/* Original Why Support Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -119,6 +126,27 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Membership Benefits */}
+      <MembershipBenefitsSection />
+
+      {/* Testimonials */}
+      <TestimonialsSection />
+
+      {/* Creator Story */}
+      <CreatorStorySection />
+
+      {/* Tech Stack */}
+      <TechStackSection />
+
+      {/* Roadmap */}
+      <RoadmapSection />
+
+      {/* Mobile sticky CTA */}
+      <MobileCTA />
+
+      {/* Bottom padding for mobile CTA */}
+      <div className="h-20 md:hidden" />
     </Layout>
   );
 }
