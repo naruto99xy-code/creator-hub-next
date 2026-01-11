@@ -51,8 +51,12 @@ export default function Shop() {
             {displayProducts.map((product, i) => (
               <motion.div key={product.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                 <GlassCard hover className="h-full flex flex-col">
-                  <div className="aspect-video bg-muted rounded-lg mb-4 flex items-center justify-center">
-                    <Package className="w-12 h-12 text-muted-foreground" />
+                  <div className="aspect-video bg-muted rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <Package className="w-12 h-12 text-muted-foreground" />
+                    )}
                   </div>
                   {product.category && <span className="text-xs text-primary font-medium mb-2">{product.category}</span>}
                   <h3 className="text-xl font-bold mb-2">{product.title}</h3>
