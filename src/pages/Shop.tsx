@@ -25,7 +25,11 @@ export default function Shop() {
   }, []);
 
   const fetchProducts = async () => {
-    const { data } = await supabase.from('products').select('*').eq('is_active', true);
+    // Fetch only public product fields (excludes file_url for security)
+    const { data } = await supabase
+      .from('products')
+      .select('id, title, description, price, image_url, category, download_count')
+      .eq('is_active', true);
     setProducts(data || []);
     setLoading(false);
   };

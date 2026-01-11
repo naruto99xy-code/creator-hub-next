@@ -139,13 +139,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "orders_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       product_files: {
@@ -173,13 +166,6 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_files_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
             referencedColumns: ["id"]
           },
         ]
@@ -309,47 +295,24 @@ export type Database = {
       }
     }
     Views: {
-      products_public: {
-        Row: {
-          category: string | null
-          created_at: string | null
-          description: string | null
-          download_count: number | null
-          id: string | null
-          image_url: string | null
-          is_active: boolean | null
-          price: number | null
-          title: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          download_count?: number | null
-          id?: string | null
-          image_url?: string | null
-          is_active?: boolean | null
-          price?: number | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          download_count?: number | null
-          id?: string | null
-          image_url?: string | null
-          is_active?: boolean | null
-          price?: number | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_public_products: {
+        Args: never
+        Returns: {
+          category: string
+          created_at: string
+          description: string
+          download_count: number
+          id: string
+          image_url: string
+          is_active: boolean
+          price: number
+          title: string
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
