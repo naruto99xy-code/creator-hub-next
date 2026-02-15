@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -20,6 +21,7 @@ interface Product {
 export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -70,7 +72,7 @@ export default function Shop() {
                     <span className="text-2xl font-bold">₹{product.price}</span>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground"><Download className="w-3 h-3" />{product.download_count}</div>
                   </div>
-                  <GlowButton className="w-full mt-4"><ShoppingCart className="w-4 h-4" />Buy Now</GlowButton>
+                  <GlowButton className="w-full mt-4" onClick={() => navigate(`/checkout/${encodeURIComponent(product.title)}?price=${product.price}`)}><ShoppingCart className="w-4 h-4" />Buy Now</GlowButton>
                 </GlassCard>
               </motion.div>
             ))}
