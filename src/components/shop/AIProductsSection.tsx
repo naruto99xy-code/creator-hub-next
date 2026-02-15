@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Bot, Sparkles, Heart, Code, Brain, Check } from 'lucide-react';
-import { toast } from 'sonner';
+import { Bot, Sparkles, Heart, Code, Brain, Check, Loader2 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 interface AIProduct {
   name: string;
@@ -79,10 +79,6 @@ const aiProducts: AIProduct[] = [
   },
 ];
 
-function handlePurchase(productName: string, price: number) {
-  window.location.href = `/checkout/${encodeURIComponent(productName)}?price=${price}`;
-}
-
 function FloatingParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -140,7 +136,7 @@ function FloatingParticles() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-function AICard({ product, index }: { product: AIProduct; index: number }) {
+function AICard({ product, index, onPurchase, processing }: { product: AIProduct; index: number; onPurchase: (name: string, price: number) => void; processing: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -198,8 +194,9 @@ function AICard({ product, index }: { product: AIProduct; index: number }) {
 
         <motion.button
           whileTap={{ scale: 0.96 }}
-          onClick={() => handlePurchase(product.name, product.price)}
-          className="w-full py-3 rounded-lg font-semibold text-sm text-white transition-shadow duration-300"
+          disabled={processing}
+          onClick={() => onPurchase(product.name, product.price)}
+          className="w-full py-3 rounded-lg font-semibold text-sm text-white transition-shadow duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           style={{
             background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})`,
             boxShadow: `0 0 20px ${product.gradientFrom}55`,
@@ -211,6 +208,7 @@ function AICard({ product, index }: { product: AIProduct; index: number }) {
             (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 20px ${product.gradientFrom}55`;
           }}
         >
+          {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           {product.buttonText}
         </motion.button>
       </div>
@@ -219,6 +217,8 @@ function AICard({ product, index }: { product: AIProduct; index: number }) {
 }
 
 export default function AIProductsSection() {
+  const { handlePurchase, processing } = useRazorpay();
+
   return (
     <section className="py-20 relative overflow-hidden">
       {/* Animated background glows */}
@@ -252,7 +252,7 @@ export default function AIProductsSection() {
 
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
           {aiProducts.map((product, i) => (
-            <AICard key={product.name} product={product} index={i} />
+            <AICard key={product.name} product={product} index={i} onPurchase={handlePurchase} processing={processing} />
           ))}
         </div>
       </div>

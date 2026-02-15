@@ -1,8 +1,9 @@
 import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Check, Crown, Zap, Star } from 'lucide-react';
+import { Check, Crown, Zap, Star, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 const plans = [
   { name: 'Starter', price: 199, icon: Zap, features: ['Access to basic templates', 'Community Discord access', 'Monthly newsletter'], popular: false },
@@ -11,6 +12,8 @@ const plans = [
 ];
 
 export default function Membership() {
+  const { handlePurchase, processing } = useRazorpay();
+
   return (
     <Layout>
       <section className="py-20">
@@ -31,7 +34,15 @@ export default function Membership() {
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((f) => <li key={f} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-primary" />{f}</li>)}
                   </ul>
-                  <GlowButton variant={plan.popular ? 'primary' : 'secondary'} className="w-full">Join {plan.name}</GlowButton>
+                  <GlowButton
+                    variant={plan.popular ? 'primary' : 'secondary'}
+                    className="w-full"
+                    disabled={processing}
+                    onClick={() => handlePurchase(`${plan.name} Membership`, plan.price)}
+                  >
+                    {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    Join {plan.name}
+                  </GlowButton>
                 </GlassCard>
               </motion.div>
             ))}

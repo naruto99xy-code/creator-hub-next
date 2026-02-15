@@ -19,7 +19,6 @@ import Refund from "./pages/Refund";
 import Blog from "./pages/Blog";
 import Tutorials from "./pages/Tutorials";
 import Docs from "./pages/Docs";
-import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -45,7 +44,6 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/tutorials" element={<Tutorials />} />
             <Route path="/docs" element={<Docs />} />
-            <Route path="/checkout/:productName" element={<Checkout />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
