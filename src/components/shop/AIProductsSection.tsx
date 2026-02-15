@@ -79,8 +79,8 @@ const aiProducts: AIProduct[] = [
   },
 ];
 
-function handlePurchase(productName: string) {
-  toast.info(`Purchase flow for ${productName} coming soon!`);
+function handlePurchase(productName: string, price: number) {
+  window.location.href = `/checkout/${encodeURIComponent(productName)}?price=${price}`;
 }
 
 function FloatingParticles() {
@@ -198,7 +198,7 @@ function AICard({ product, index }: { product: AIProduct; index: number }) {
 
         <motion.button
           whileTap={{ scale: 0.96 }}
-          onClick={() => handlePurchase(product.name)}
+          onClick={() => handlePurchase(product.name, product.price)}
           className="w-full py-3 rounded-lg font-semibold text-sm text-white transition-shadow duration-300"
           style={{
             background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})`,
