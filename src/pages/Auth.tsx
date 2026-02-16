@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getSafeErrorMessage } from '@/lib/safeError';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Layout } from '@/components/layout/Layout';
@@ -61,8 +62,8 @@ export default function Auth() {
         toast({ title: 'Welcome back!' });
       }
       navigate('/dashboard');
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } catch (error: unknown) {
+      toast({ title: 'Error', description: getSafeErrorMessage(error), variant: 'destructive' });
     } finally {
       setLoading(false);
     }

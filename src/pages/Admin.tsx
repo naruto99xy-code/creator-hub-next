@@ -50,7 +50,7 @@ export default function Admin() {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
     const { error } = await supabase.storage.from(bucket).upload(fileName, file);
     if (error) {
-      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
+      toast({ title: 'Upload failed', description: 'File upload failed. Please try again.', variant: 'destructive' });
       return null;
     }
     const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
@@ -76,7 +76,7 @@ export default function Admin() {
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const { error } = await supabase.storage.from('product-files').upload(fileName, productFile);
         if (error) {
-          toast({ title: 'File upload failed', description: error.message, variant: 'destructive' });
+          toast({ title: 'File upload failed', description: 'Could not upload file. Please try again.', variant: 'destructive' });
           setUploading(false);
           return;
         }
@@ -90,7 +90,7 @@ export default function Admin() {
       });
       
       if (error) {
-        toast({ title: 'Error', description: error.message, variant: 'destructive' });
+        toast({ title: 'Error', description: 'Failed to add product. Please try again.', variant: 'destructive' });
       } else {
         toast({ title: 'Product added!' });
         setNewProduct({ title: '', description: '', price: 0, category: '' });

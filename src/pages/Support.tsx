@@ -9,6 +9,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/lib/auth';
+import { useRazorpay } from '@/hooks/useRazorpay';
+import { getSafeErrorMessage } from '@/lib/safeError';
 import { Coffee, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import profileAvatar from '@/assets/profile-avatar.jpg';
@@ -21,9 +23,10 @@ export default function Support() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+
+  const { handlePurchase, processing } = useRazorpay();
 
   const handleSupport = async () => {
     if (!name.trim() || amount < 1) {
@@ -31,27 +34,8 @@ export default function Support() {
       return;
     }
 
-    setLoading(true);
-    try {
-      const { error } = await supabase.from('supporters').insert({
-        user_id: user?.id || null,
-        name: name.trim(),
-        email: email.trim() || null,
-        amount,
-        message: message.trim() || null,
-        is_monthly: isMonthly,
-        payment_status: 'completed', // Mock payment
-      });
-
-      if (error) throw error;
-
-      toast({ title: 'Thank you for your support! 🎉', description: `₹${amount} received successfully` });
-      setName(''); setEmail(''); setMessage(''); setAmount(199);
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
+    const label = isMonthly ? `Monthly Support - ₹${amount}` : `One-time Support - ₹${amount}`;
+    handlePurchase(label, amount);
   };
 
   return (
@@ -101,11 +85,11 @@ export default function Support() {
                   <Label htmlFor="monthly" className="cursor-pointer">Make this a monthly support</Label>
                 </div>
 
-                <GlowButton className="w-full" size="lg" onClick={handleSupport} disabled={loading}>
-                  {loading ? 'Processing...' : <><Heart className="w-5 h-5" /> Support ₹{amount}</>}
+                <GlowButton className="w-full" size="lg" onClick={handleSupport} disabled={processing}>
+                  {processing ? 'Processing...' : <><Heart className="w-5 h-5" /> Support ₹{amount}</>}
                 </GlowButton>
 
-                <p className="text-center text-xs text-muted-foreground">Secure payment via Razorpay (Test Mode)</p>
+                <p className="text-center text-xs text-muted-foreground">Secure payment via Razorpay</p>
               </div>
             </GlassCard>
           </motion.div>
