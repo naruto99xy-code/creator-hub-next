@@ -1,7 +1,7 @@
 -- ============================================================
 -- SUPABASE DATABASE SETUP - Full Schema Documentation
 -- Project: Next Developer
--- Generated from current working database
+-- Last verified against live DB: 2026-02-17
 -- ============================================================
 
 -- 1. EXTENSIONS
@@ -126,7 +126,59 @@ CREATE TABLE IF NOT EXISTS public.product_files (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 4. ENABLE ROW LEVEL SECURITY
+-- 4. STORAGE BUCKETS
+-- ============================================================
+
+-- Product images (public) - thumbnails & previews
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('product-images', 'product-images', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Product files (private) - secured digital downloads
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('product-files', 'product-files', false)
+ON CONFLICT (id) DO NOTHING;
+
+-- STORAGE POLICIES: product-images (public read)
+DROP POLICY IF EXISTS "Public read access for product images" ON storage.objects;
+CREATE POLICY "Public read access for product images"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'product-images');
+
+DROP POLICY IF EXISTS "Admins can upload product images" ON storage.objects;
+CREATE POLICY "Admins can upload product images"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'product-images' AND has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "Admins can update product images" ON storage.objects;
+CREATE POLICY "Admins can update product images"
+  ON storage.objects FOR UPDATE
+  USING (bucket_id = 'product-images' AND has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "Admins can delete product images" ON storage.objects;
+CREATE POLICY "Admins can delete product images"
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'product-images' AND has_role(auth.uid(), 'admin'::app_role));
+
+-- STORAGE POLICIES: product-files (private, purchase-gated)
+DROP POLICY IF EXISTS "Purchasers can download product files" ON storage.objects;
+CREATE POLICY "Purchasers can download product files"
+  ON storage.objects FOR SELECT
+  USING (
+    bucket_id = 'product-files'
+    AND EXISTS (
+      SELECT 1 FROM public.orders
+      WHERE orders.user_id = auth.uid()
+        AND orders.payment_status = 'completed'
+    )
+  );
+
+DROP POLICY IF EXISTS "Admins can manage product files storage" ON storage.objects;
+CREATE POLICY "Admins can manage product files storage"
+  ON storage.objects FOR ALL
+  USING (bucket_id = 'product-files' AND has_role(auth.uid(), 'admin'::app_role));
+
+-- 5. ENABLE ROW LEVEL SECURITY
 -- ============================================================
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
@@ -139,7 +191,7 @@ ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_files ENABLE ROW LEVEL SECURITY;
 
--- 5. SECURITY DEFINER FUNCTIONS
+-- 6. SECURITY DEFINER FUNCTIONS
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
@@ -157,10 +209,10 @@ AS $$
   )
 $$;
 
--- 6. RLS POLICIES
+-- 7. RLS POLICIES
 -- ============================================================
 
--- PROFILES POLICIES
+-- PROFILES
 DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
 CREATE POLICY "Users can view their own profile"
   ON public.profiles FOR SELECT
@@ -176,7 +228,7 @@ CREATE POLICY "Users can update their own profile"
   ON public.profiles FOR UPDATE
   USING (auth.uid() = id);
 
--- USER ROLES POLICIES
+-- USER ROLES
 DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;
 CREATE POLICY "Users can view their own roles"
   ON public.user_roles FOR SELECT
@@ -187,7 +239,7 @@ CREATE POLICY "Admins can manage all roles"
   ON public.user_roles FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- PRODUCTS POLICIES
+-- PRODUCTS
 DROP POLICY IF EXISTS "Anyone can view active products" ON public.products;
 CREATE POLICY "Anyone can view active products"
   ON public.products FOR SELECT
@@ -198,7 +250,7 @@ CREATE POLICY "Admins can manage products"
   ON public.products FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- SUPPORTERS POLICIES
+-- SUPPORTERS
 DROP POLICY IF EXISTS "Users can view their own support" ON public.supporters;
 CREATE POLICY "Users can view their own support"
   ON public.supporters FOR SELECT
@@ -214,7 +266,7 @@ CREATE POLICY "Authenticated users can create support"
   ON public.supporters FOR INSERT
   WITH CHECK ((auth.uid() IS NOT NULL) OR (email IS NOT NULL AND name IS NOT NULL));
 
--- PURCHASES POLICIES
+-- PURCHASES
 DROP POLICY IF EXISTS "Users can view their own purchases" ON public.purchases;
 CREATE POLICY "Users can view their own purchases"
   ON public.purchases FOR SELECT
@@ -225,7 +277,7 @@ CREATE POLICY "Service role can manage all purchases"
   ON public.purchases FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- MEMBERSHIP PLANS POLICIES
+-- MEMBERSHIP PLANS
 DROP POLICY IF EXISTS "Anyone can view active plans" ON public.membership_plans;
 CREATE POLICY "Anyone can view active plans"
   ON public.membership_plans FOR SELECT
@@ -236,7 +288,7 @@ CREATE POLICY "Admins can manage plans"
   ON public.membership_plans FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- MEMBERSHIPS POLICIES
+-- MEMBERSHIPS
 DROP POLICY IF EXISTS "Users can view their own membership" ON public.memberships;
 CREATE POLICY "Users can view their own membership"
   ON public.memberships FOR SELECT
@@ -252,7 +304,7 @@ CREATE POLICY "Admins can manage all memberships"
   ON public.memberships FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- NEWSLETTER SUBSCRIBERS POLICIES
+-- NEWSLETTER SUBSCRIBERS
 DROP POLICY IF EXISTS "Anyone can subscribe to newsletter" ON public.newsletter_subscribers;
 CREATE POLICY "Anyone can subscribe to newsletter"
   ON public.newsletter_subscribers FOR INSERT
@@ -268,7 +320,7 @@ CREATE POLICY "Admins can manage subscribers"
   ON public.newsletter_subscribers FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- ORDERS POLICIES
+-- ORDERS
 DROP POLICY IF EXISTS "Users can view their own orders" ON public.orders;
 CREATE POLICY "Users can view their own orders"
   ON public.orders FOR SELECT
@@ -284,7 +336,7 @@ CREATE POLICY "Admins can view all orders"
   ON public.orders FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- PRODUCT FILES POLICIES
+-- PRODUCT FILES
 DROP POLICY IF EXISTS "Users can view files for purchased products" ON public.product_files;
 CREATE POLICY "Users can view files for purchased products"
   ON public.product_files FOR SELECT
@@ -302,7 +354,7 @@ CREATE POLICY "Admins can manage product files"
   ON public.product_files FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- 7. TRIGGER FUNCTIONS
+-- 8. TRIGGER FUNCTIONS
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -349,7 +401,7 @@ AS $$
   WHERE is_active = true;
 $$;
 
--- 8. TRIGGERS
+-- 9. TRIGGERS
 -- ============================================================
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -370,20 +422,10 @@ CREATE TRIGGER update_profiles_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION public.update_updated_at_column();
 
--- 9. INDEXES
+-- 10. INDEXES (verified against live DB)
 -- ============================================================
-
-CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id);
-CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
-CREATE INDEX IF NOT EXISTS idx_products_is_active ON public.products(is_active);
 CREATE INDEX IF NOT EXISTS idx_purchases_user_id ON public.purchases(user_id);
-CREATE INDEX IF NOT EXISTS idx_supporters_created_at ON public.supporters(created_at);
-CREATE INDEX IF NOT EXISTS idx_supporters_user_id ON public.supporters(user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_product_id ON public.orders(product_id);
-CREATE INDEX IF NOT EXISTS idx_memberships_user_id ON public.memberships(user_id);
-CREATE INDEX IF NOT EXISTS idx_product_files_product_id ON public.product_files(product_id);
-CREATE INDEX IF NOT EXISTS idx_newsletter_email ON public.newsletter_subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_purchases_razorpay_order_id ON public.purchases(razorpay_order_id);
 
 -- ============================================================
 -- END OF SETUP
