@@ -1,0 +1,390 @@
+-- ============================================================
+-- SUPABASE DATABASE SETUP - Full Schema Documentation
+-- Project: Next Developer
+-- Generated from current working database
+-- ============================================================
+
+-- 1. EXTENSIONS
+-- ============================================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- 2. ENUM TYPES
+-- ============================================================
+DO $$ BEGIN
+  CREATE TYPE public.app_role AS ENUM ('admin', 'user');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- 3. TABLES
+-- ============================================================
+
+-- PROFILES
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID NOT NULL PRIMARY KEY,
+  email TEXT,
+  full_name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- USER ROLES
+CREATE TABLE IF NOT EXISTS public.user_roles (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  role app_role NOT NULL DEFAULT 'user',
+  UNIQUE (user_id, role)
+);
+
+-- PRODUCTS
+CREATE TABLE IF NOT EXISTS public.products (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  price INTEGER NOT NULL,
+  category TEXT,
+  image_url TEXT,
+  file_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  download_count INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- SUPPORTERS
+CREATE TABLE IF NOT EXISTS public.supporters (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
+  name TEXT NOT NULL,
+  email TEXT,
+  amount INTEGER NOT NULL,
+  message TEXT,
+  is_monthly BOOLEAN DEFAULT false,
+  payment_status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- PURCHASES
+CREATE TABLE IF NOT EXISTS public.purchases (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  product_name TEXT NOT NULL,
+  amount INTEGER NOT NULL,
+  razorpay_order_id TEXT,
+  razorpay_payment_id TEXT,
+  payment_status TEXT NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- MEMBERSHIP PLANS
+CREATE TABLE IF NOT EXISTS public.membership_plans (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  price INTEGER NOT NULL,
+  features JSONB DEFAULT '[]'::jsonb,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- MEMBERSHIPS
+CREATE TABLE IF NOT EXISTS public.memberships (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  plan_id UUID REFERENCES public.membership_plans(id),
+  status TEXT DEFAULT 'active',
+  started_at TIMESTAMPTZ DEFAULT now(),
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- NEWSLETTER SUBSCRIBERS
+CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  subscribed_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ORDERS
+CREATE TABLE IF NOT EXISTS public.orders (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  product_id UUID,
+  amount INTEGER NOT NULL,
+  payment_status TEXT DEFAULT 'pending',
+  payment_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- PRODUCT FILES
+CREATE TABLE IF NOT EXISTS public.product_files (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID NOT NULL,
+  file_url TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- 4. ENABLE ROW LEVEL SECURITY
+-- ============================================================
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supporters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.purchases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.membership_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.memberships ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_files ENABLE ROW LEVEL SECURITY;
+
+-- 5. SECURITY DEFINER FUNCTIONS
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.user_roles
+    WHERE user_id = _user_id
+      AND role = _role
+  )
+$$;
+
+-- 6. RLS POLICIES
+-- ============================================================
+
+-- PROFILES POLICIES
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+CREATE POLICY "Users can view their own profile"
+  ON public.profiles FOR SELECT
+  USING (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+CREATE POLICY "Users can insert their own profile"
+  ON public.profiles FOR INSERT
+  WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile"
+  ON public.profiles FOR UPDATE
+  USING (auth.uid() = id);
+
+-- USER ROLES POLICIES
+DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;
+CREATE POLICY "Users can view their own roles"
+  ON public.user_roles FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can manage all roles" ON public.user_roles;
+CREATE POLICY "Admins can manage all roles"
+  ON public.user_roles FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- PRODUCTS POLICIES
+DROP POLICY IF EXISTS "Anyone can view active products" ON public.products;
+CREATE POLICY "Anyone can view active products"
+  ON public.products FOR SELECT
+  USING (is_active = true);
+
+DROP POLICY IF EXISTS "Admins can manage products" ON public.products;
+CREATE POLICY "Admins can manage products"
+  ON public.products FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- SUPPORTERS POLICIES
+DROP POLICY IF EXISTS "Users can view their own support" ON public.supporters;
+CREATE POLICY "Users can view their own support"
+  ON public.supporters FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can view all supporters" ON public.supporters;
+CREATE POLICY "Admins can view all supporters"
+  ON public.supporters FOR SELECT
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "Authenticated users can create support" ON public.supporters;
+CREATE POLICY "Authenticated users can create support"
+  ON public.supporters FOR INSERT
+  WITH CHECK ((auth.uid() IS NOT NULL) OR (email IS NOT NULL AND name IS NOT NULL));
+
+-- PURCHASES POLICIES
+DROP POLICY IF EXISTS "Users can view their own purchases" ON public.purchases;
+CREATE POLICY "Users can view their own purchases"
+  ON public.purchases FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Service role can manage all purchases" ON public.purchases;
+CREATE POLICY "Service role can manage all purchases"
+  ON public.purchases FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- MEMBERSHIP PLANS POLICIES
+DROP POLICY IF EXISTS "Anyone can view active plans" ON public.membership_plans;
+CREATE POLICY "Anyone can view active plans"
+  ON public.membership_plans FOR SELECT
+  USING (is_active = true);
+
+DROP POLICY IF EXISTS "Admins can manage plans" ON public.membership_plans;
+CREATE POLICY "Admins can manage plans"
+  ON public.membership_plans FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- MEMBERSHIPS POLICIES
+DROP POLICY IF EXISTS "Users can view their own membership" ON public.memberships;
+CREATE POLICY "Users can view their own membership"
+  ON public.memberships FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can create their own membership" ON public.memberships;
+CREATE POLICY "Users can create their own membership"
+  ON public.memberships FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can manage all memberships" ON public.memberships;
+CREATE POLICY "Admins can manage all memberships"
+  ON public.memberships FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- NEWSLETTER SUBSCRIBERS POLICIES
+DROP POLICY IF EXISTS "Anyone can subscribe to newsletter" ON public.newsletter_subscribers;
+CREATE POLICY "Anyone can subscribe to newsletter"
+  ON public.newsletter_subscribers FOR INSERT
+  WITH CHECK (email IS NOT NULL AND email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+
+DROP POLICY IF EXISTS "Admins can view all subscribers" ON public.newsletter_subscribers;
+CREATE POLICY "Admins can view all subscribers"
+  ON public.newsletter_subscribers FOR SELECT
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "Admins can manage subscribers" ON public.newsletter_subscribers;
+CREATE POLICY "Admins can manage subscribers"
+  ON public.newsletter_subscribers FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- ORDERS POLICIES
+DROP POLICY IF EXISTS "Users can view their own orders" ON public.orders;
+CREATE POLICY "Users can view their own orders"
+  ON public.orders FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can create their own orders" ON public.orders;
+CREATE POLICY "Users can create their own orders"
+  ON public.orders FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can view all orders" ON public.orders;
+CREATE POLICY "Admins can view all orders"
+  ON public.orders FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- PRODUCT FILES POLICIES
+DROP POLICY IF EXISTS "Users can view files for purchased products" ON public.product_files;
+CREATE POLICY "Users can view files for purchased products"
+  ON public.product_files FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM orders
+      WHERE orders.product_id = product_files.product_id
+        AND orders.user_id = auth.uid()
+        AND orders.payment_status = 'completed'
+    )
+  );
+
+DROP POLICY IF EXISTS "Admins can manage product files" ON public.product_files;
+CREATE POLICY "Admins can manage product files"
+  ON public.product_files FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role));
+
+-- 7. TRIGGER FUNCTIONS
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name)
+  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name');
+
+  INSERT INTO public.user_roles (user_id, role)
+  VALUES (NEW.id, 'user');
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.get_public_products()
+RETURNS TABLE(
+  id UUID, title TEXT, description TEXT, price INTEGER,
+  category TEXT, image_url TEXT, is_active BOOLEAN,
+  download_count INTEGER, created_at TIMESTAMPTZ, updated_at TIMESTAMPTZ
+)
+LANGUAGE sql
+STABLE
+SET search_path = public
+AS $$
+  SELECT id, title, description, price, category, image_url,
+         is_active, download_count, created_at, updated_at
+  FROM public.products
+  WHERE is_active = true;
+$$;
+
+-- 8. TRIGGERS
+-- ============================================================
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+
+DROP TRIGGER IF EXISTS update_products_updated_at ON public.products;
+CREATE TRIGGER update_products_updated_at
+  BEFORE UPDATE ON public.products
+  FOR EACH ROW
+  EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
+CREATE TRIGGER update_profiles_updated_at
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.update_updated_at_column();
+
+-- 9. INDEXES
+-- ============================================================
+
+CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+CREATE INDEX IF NOT EXISTS idx_products_is_active ON public.products(is_active);
+CREATE INDEX IF NOT EXISTS idx_purchases_user_id ON public.purchases(user_id);
+CREATE INDEX IF NOT EXISTS idx_supporters_created_at ON public.supporters(created_at);
+CREATE INDEX IF NOT EXISTS idx_supporters_user_id ON public.supporters(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_product_id ON public.orders(product_id);
+CREATE INDEX IF NOT EXISTS idx_memberships_user_id ON public.memberships(user_id);
+CREATE INDEX IF NOT EXISTS idx_product_files_product_id ON public.product_files(product_id);
+CREATE INDEX IF NOT EXISTS idx_newsletter_email ON public.newsletter_subscribers(email);
+
+-- ============================================================
+-- END OF SETUP
+-- ============================================================
