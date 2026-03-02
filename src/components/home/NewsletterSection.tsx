@@ -36,6 +36,11 @@ export function NewsletterSection() {
           throw error;
         }
       } else {
+        // Send welcome email
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { email: result.data },
+        });
+
         setIsSubscribed(true);
         toast.success('Welcome! You\'re now subscribed.');
         setEmail('');

@@ -127,6 +127,19 @@ export default function Services() {
 
       if (error) throw error;
 
+      // Send email notification
+      const { data: emailRes, error: emailError } = await supabase.functions.invoke('send-inquiry-email', {
+        body: {
+          name: result.data.name,
+          email: result.data.email,
+          project_type: result.data.projectType || 'Not specified',
+          budget_range: result.data.budget || 'Not specified',
+          message: result.data.message,
+        },
+      });
+
+      if (emailError) throw emailError;
+
       toast.success('Inquiry sent! We\'ll get back to you shortly.');
       setForm({ name: '', email: '', projectType: '', budget: '', message: '' });
     } catch (error) {
