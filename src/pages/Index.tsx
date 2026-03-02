@@ -55,7 +55,7 @@ export default function Index() {
             >
               <GlassCard className="max-w-md mx-auto mb-8">
                 <div className="flex items-center gap-4">
-                  <img src={profileAvatar} alt="Profile" className="w-20 h-20 rounded-full border-2 border-primary" />
+                  <img src="/logo.png" alt="Next Developer" className="w-20 h-20 rounded-full border-2 border-primary object-contain bg-background p-1" />
                   <div className="text-left">
                     <h3 className="text-xl font-bold">Next Developer</h3>
                     <p className="text-muted-foreground text-sm">Full-Stack Developer & Creator</p>

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Code, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Github, Twitter, Linkedin, Heart } from 'lucide-react';
 
 export function Footer() {
   const location = useLocation();
@@ -18,9 +18,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary group-hover:shadow-lg group-hover:shadow-primary/25 transition-shadow">
-                <Code className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <img src="/logo.png" alt="Next Developer logo" className="w-9 h-9 rounded-lg object-contain group-hover:shadow-lg group-hover:shadow-primary/25 transition-shadow" />
               <span className="text-xl font-bold glow-text">Next Developer</span>
             </Link>
             <p className="text-muted-foreground text-sm">
