@@ -1,7 +1,7 @@
 -- ============================================================
 -- SUPABASE DATABASE SETUP - Full Schema Documentation
 -- Project: Next Developer
--- Last verified against live DB: 2026-02-17
+-- Last verified against live DB: 2026-03-02
 -- ============================================================
 
 -- 1. EXTENSIONS
@@ -126,6 +126,17 @@ CREATE TABLE IF NOT EXISTS public.product_files (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- INQUIRIES
+CREATE TABLE IF NOT EXISTS public.inquiries (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  project_type TEXT,
+  budget_range TEXT,
+  message TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- 4. STORAGE BUCKETS
 -- ============================================================
 
@@ -190,6 +201,7 @@ ALTER TABLE public.memberships ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_files ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
 
 -- 6. SECURITY DEFINER FUNCTIONS
 -- ============================================================
@@ -354,7 +366,20 @@ CREATE POLICY "Admins can manage product files"
   ON public.product_files FOR ALL
   USING (has_role(auth.uid(), 'admin'::app_role));
 
--- 8. TRIGGER FUNCTIONS
+-- INQUIRIES
+DROP POLICY IF EXISTS "Anyone can submit inquiries" ON public.inquiries;
+CREATE POLICY "Anyone can submit inquiries"
+  ON public.inquiries FOR INSERT
+  WITH CHECK (
+    name IS NOT NULL AND length(name) <= 100
+    AND email IS NOT NULL AND email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    AND message IS NOT NULL AND length(message) <= 1000
+  );
+
+DROP POLICY IF EXISTS "Admins can view all inquiries" ON public.inquiries;
+CREATE POLICY "Admins can view all inquiries"
+  ON public.inquiries FOR SELECT
+  USING (has_role(auth.uid(), 'admin'::app_role));
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
