@@ -22,6 +22,7 @@ import Tutorials from "./pages/Tutorials";
 import Docs from "./pages/Docs";
 import Services from "./pages/Services";
 import Success from "./pages/Success";
+import PaymentFailed from "./pages/PaymentFailed";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/docs" element={<Docs />} />
             <Route path="/services" element={<Services />} />
             <Route path="/success" element={<Success />} />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
