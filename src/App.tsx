@@ -19,7 +19,7 @@ import Refund from "./pages/Refund";
 import Blog from "./pages/Blog";
 import Tutorials from "./pages/Tutorials";
 import Docs from "./pages/Docs";
-
+import Services from "./pages/Services";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -44,6 +44,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/tutorials" element={<Tutorials />} />
             <Route path="/docs" element={<Docs />} />
+            <Route path="/services" element={<Services />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

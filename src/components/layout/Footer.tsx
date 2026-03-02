@@ -37,10 +37,14 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
+              <li>
+                <Link to="/services" className={linkClass('/services')}>
+                  Services
+                </Link>
+              </li>
               <li>
                 <Link to="/support" className={linkClass('/support')}>
                   Support Me
