@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Code, Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -29,9 +29,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary">
-              <Code className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img src="/logo.png" alt="Next Developer logo" className="w-9 h-9 rounded-lg object-contain" />
             <span className="text-xl font-bold glow-text">Next Developer</span>
           </Link>
 
