@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth';
 
+// Razorpay publishable key (safe for client-side usage)
 const RAZORPAY_KEY_ID = 'rzp_test_SGJlMugI0Soq4A';
 
 declare global {
@@ -70,7 +71,7 @@ export function useRazorpay() {
             }
 
             toast.success('Payment Successful 🎉');
-            window.location.href = '/dashboard';
+            window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}`;
           } catch {
             toast.error('Verification error. Contact support.');
             setProcessing(false);
