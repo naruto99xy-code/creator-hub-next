@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Support from "./pages/Support";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
+import AI from "./pages/AI";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/support" element={<Support />} />
             <Route path="/membership" element={<Membership />} />
+            <Route path="/ai" element={<AI />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<Admin />} />

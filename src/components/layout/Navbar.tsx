@@ -10,7 +10,7 @@ const navLinks = [
   { href: '/services', label: 'Services' },
   { href: '/support', label: 'Support' },
   { href: '/membership', label: 'Membership' },
-  { href: '/shop', label: 'Shop' },
+  { href: '/ai', label: 'AI' },
 ];
 
 export function Navbar() {

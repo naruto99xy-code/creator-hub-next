@@ -5,7 +5,6 @@ import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
 import { Package, ShoppingCart, Download, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import AIProductsSection from '@/components/shop/AIProductsSection';
 import { useRazorpay } from '@/hooks/useRazorpay';
 
 interface Product {
@@ -82,7 +81,6 @@ export default function Shop() {
         </div>
       </section>
 
-      <AIProductsSection />
     </Layout>
   );
 }
