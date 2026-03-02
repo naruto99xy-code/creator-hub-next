@@ -13,7 +13,7 @@ import { useRazorpay } from '@/hooks/useRazorpay';
 import { getSafeErrorMessage } from '@/lib/safeError';
 import { Coffee, Heart, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import profileAvatar from '@/assets/profile-avatar.jpg';
+import logo from '/logo.png';
 
 const presetAmounts = [99, 199, 499, 999];
 
@@ -53,7 +53,7 @@ export default function Support() {
 
             <GlassCard>
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-border">
-                <img src={profileAvatar} alt="Profile" className="w-16 h-16 rounded-full border-2 border-primary" />
+                <img src={logo} alt="Profile" className="w-16 h-16 rounded-full border-2 border-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Next Developer</h3>
                   <p className="text-muted-foreground text-sm">Buy me a coffee ☕</p>
