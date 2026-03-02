@@ -10,6 +10,9 @@ import {
 import founderImg from '@/assets/founder.jpg';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
+import { Loader2 } from 'lucide-react';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -93,15 +96,45 @@ const processSteps = [
 
 export default function Services() {
   const [form, setForm] = useState({ name: '', email: '', projectType: '', budget: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const inquirySchema = z.object({
+    name: z.string().trim().min(1, 'Name is required').max(100),
+    email: z.string().trim().email('Please enter a valid email').max(255),
+    message: z.string().trim().min(1, 'Message is required').max(1000),
+    projectType: z.string().optional(),
+    budget: z.string().optional(),
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      toast.error('Please fill in all required fields.');
+
+    const result = inquirySchema.safeParse(form);
+    if (!result.success) {
+      toast.error(result.error.errors[0].message);
       return;
     }
-    toast.success('Thank you! We\'ll get back to you shortly.');
-    setForm({ name: '', email: '', projectType: '', budget: '', message: '' });
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from('inquiries').insert({
+        name: result.data.name,
+        email: result.data.email,
+        project_type: result.data.projectType || null,
+        budget_range: result.data.budget || null,
+        message: result.data.message,
+      });
+
+      if (error) throw error;
+
+      toast.success('Inquiry sent! We\'ll get back to you shortly.');
+      setForm({ name: '', email: '', projectType: '', budget: '', message: '' });
+    } catch (error) {
+      console.error('Inquiry submission error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -473,8 +506,12 @@ export default function Services() {
                       maxLength={1000}
                     />
                   </div>
-                  <GlowButton type="submit" size="lg" className="w-full">
-                    <Send className="w-5 h-5" /> Send Inquiry
+                  <GlowButton type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</>
+                    ) : (
+                      <><Send className="w-5 h-5" /> Send Inquiry</>
+                    )}
                   </GlowButton>
                 </form>
               </GlassCard>
