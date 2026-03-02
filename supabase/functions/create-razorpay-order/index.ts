@@ -12,7 +12,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify auth
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -36,7 +35,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { productName, amount } = await req.json();
+    const { productName, amount, userName, userMobile } = await req.json();
 
     if (!productName || !amount || amount <= 0) {
       return new Response(JSON.stringify({ error: "Invalid product or amount" }), {
@@ -48,7 +47,6 @@ Deno.serve(async (req) => {
     const keyId = Deno.env.get("RAZORPAY_KEY_ID")!;
     const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET")!;
 
-    // Create Razorpay order via REST API
     const razorpayRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
       headers: {
@@ -56,10 +54,15 @@ Deno.serve(async (req) => {
         Authorization: "Basic " + btoa(`${keyId}:${keySecret}`),
       },
       body: JSON.stringify({
-        amount: amount * 100, // paisa
+        amount: amount * 100,
         currency: "INR",
         receipt: `rcpt_${Date.now()}`,
-        notes: { product_name: productName },
+        notes: {
+          product_name: productName,
+          user_name: userName || "",
+          user_mobile: userMobile || "",
+          source: "nextdeveloper.in",
+        },
       }),
     });
 

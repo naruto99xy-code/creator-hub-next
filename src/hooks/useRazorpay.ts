@@ -12,11 +12,24 @@ declare global {
   }
 }
 
+interface PurchaseOptions {
+  productName: string;
+  price: number;
+  userName: string;
+  userMobile: string;
+  themeColor?: string;
+}
+
 export function useRazorpay() {
   const [processing, setProcessing] = useState(false);
   const { user } = useAuth();
 
   const handlePurchase = async (productName: string, price: number) => {
+    // Legacy compatibility — opens modal flow instead
+    toast.error('Please use the purchase modal');
+  };
+
+  const handlePurchaseWithDetails = async ({ productName, price, userName, userMobile, themeColor }: PurchaseOptions) => {
     if (processing) return;
 
     if (!user) {
@@ -36,7 +49,7 @@ export function useRazorpay() {
       }
 
       const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-        body: { productName, amount: price },
+        body: { productName, amount: price, userName, userMobile },
       });
 
       if (orderError || !orderData?.order_id) {
@@ -61,6 +74,8 @@ export function useRazorpay() {
                 razorpay_signature: response.razorpay_signature,
                 product_name: productName,
                 amount: price,
+                user_name: userName,
+                user_mobile: userMobile,
               },
             });
 
@@ -83,8 +98,16 @@ export function useRazorpay() {
             setProcessing(false);
           },
         },
-        prefill: { email: user.email },
-        theme: { color: '#6C5CE7' },
+        prefill: {
+          name: userName,
+          contact: userMobile,
+          email: user.email,
+        },
+        theme: { color: themeColor || '#6C5CE7' },
+        notes: {
+          source: 'nextdeveloper.in',
+          product: productName,
+        },
       };
 
       const rzp = new window.Razorpay(options);
@@ -100,5 +123,5 @@ export function useRazorpay() {
     }
   };
 
-  return { handlePurchase, processing };
+  return { handlePurchase, handlePurchaseWithDetails, processing };
 }

@@ -3,7 +3,8 @@ import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
 import { motion } from 'framer-motion';
 import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock } from 'lucide-react';
 import { useRazorpay } from '@/hooks/useRazorpay';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { PaymentModal } from '@/components/shop/PaymentModal';
 
 interface AIProduct {
   name: string;
@@ -153,7 +154,7 @@ function FloatingParticles() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-function AICard({ product, index, onPurchase, processing }: { product: AIProduct; index: number; onPurchase: (name: string, price: number) => void; processing: boolean }) {
+function AICard({ product, index, onBuy, processing }: { product: AIProduct; index: number; onBuy: (product: AIProduct) => void; processing: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -163,22 +164,18 @@ function AICard({ product, index, onPurchase, processing }: { product: AIProduct
       whileHover={product.comingSoon ? {} : { scale: 1.04, y: -8 }}
       className="relative group"
     >
-      {/* Outer glow */}
       <div
         className={`absolute -inset-0.5 rounded-2xl blur-lg transition-opacity duration-500 ${product.comingSoon ? 'opacity-20 animate-pulse' : 'opacity-30 group-hover:opacity-60'}`}
         style={{ background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})` }}
       />
-
       <div
         className={`relative h-full flex flex-col rounded-2xl border ${product.borderColor} bg-card/60 backdrop-blur-xl p-6 overflow-hidden ${product.comingSoon ? 'opacity-70' : ''}`}
         style={product.comingSoon ? { filter: 'blur(0.5px)' } : {}}
       >
-        {/* Top gradient line */}
         <div
           className="absolute top-0 left-0 right-0 h-[2px]"
           style={{ background: `linear-gradient(90deg, transparent, ${product.gradientFrom}, ${product.gradientTo}, transparent)` }}
         />
-
         <span
           className="self-start text-[10px] font-bold tracking-widest px-3 py-1 rounded-full mb-4"
           style={{
@@ -189,18 +186,15 @@ function AICard({ product, index, onPurchase, processing }: { product: AIProduct
         >
           {product.badge}
         </span>
-
         <div className="flex items-center gap-2 mb-1">
           <span style={{ color: product.gradientTo }}>{product.icon}</span>
           <h3 className="text-2xl font-bold text-foreground">{product.name}</h3>
         </div>
         <p className="text-sm text-muted-foreground mb-5">{product.subtitle}</p>
-
         <div className="mb-5">
           <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
           <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
         </div>
-
         <ul className="space-y-2.5 mb-6 flex-1">
           {product.features.map((f) => (
             <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -209,11 +203,10 @@ function AICard({ product, index, onPurchase, processing }: { product: AIProduct
             </li>
           ))}
         </ul>
-
         <motion.button
           whileTap={product.comingSoon ? {} : { scale: 0.96 }}
           disabled={processing || product.comingSoon}
-          onClick={() => !product.comingSoon && onPurchase(product.name, product.price)}
+          onClick={() => !product.comingSoon && onBuy(product)}
           className="w-full py-3 rounded-lg font-semibold text-sm text-white transition-shadow duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           style={{
             background: product.comingSoon
@@ -237,7 +230,24 @@ function AICard({ product, index, onPurchase, processing }: { product: AIProduct
 }
 
 export default function AI() {
-  const { handlePurchase, processing } = useRazorpay();
+  const { handlePurchaseWithDetails, processing } = useRazorpay();
+  const [selectedProduct, setSelectedProduct] = useState<AIProduct | null>(null);
+
+  const handleBuy = (product: AIProduct) => {
+    setSelectedProduct(product);
+  };
+
+  const handleConfirmPurchase = (name: string, mobile: string) => {
+    if (!selectedProduct) return;
+    handlePurchaseWithDetails({
+      productName: selectedProduct.name,
+      price: selectedProduct.price,
+      userName: name,
+      userMobile: mobile,
+      themeColor: selectedProduct.gradientFrom,
+    });
+    setSelectedProduct(null);
+  };
 
   return (
     <Layout>
@@ -256,7 +266,6 @@ export default function AI() {
           />
         </div>
         <FloatingParticles />
-
         <div className="container mx-auto px-4 relative z-10 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -311,10 +320,9 @@ export default function AI() {
           >
             Choose Your <span className="glow-text">AI Assistant</span>
           </motion.h2>
-
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
             {aiProducts.map((product, i) => (
-              <AICard key={product.name} product={product} index={i} onPurchase={handlePurchase} processing={processing} />
+              <AICard key={product.name} product={product} index={i} onBuy={handleBuy} processing={processing} />
             ))}
           </div>
         </div>
@@ -322,6 +330,20 @@ export default function AI() {
 
       {/* AI Features Deep Breakdown */}
       <Myra2FeaturesSection />
+
+      {/* Payment Modal */}
+      {selectedProduct && (
+        <PaymentModal
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onConfirm={handleConfirmPurchase}
+          productName={selectedProduct.name}
+          price={selectedProduct.price}
+          gradientFrom={selectedProduct.gradientFrom}
+          gradientTo={selectedProduct.gradientTo}
+          processing={processing}
+        />
+      )}
     </Layout>
   );
 }
