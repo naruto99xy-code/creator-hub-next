@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import profileAvatar from '@/assets/profile-avatar.jpg';
+import creatorProfile from '@/assets/creator-profile.png';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AnimatedCreatorProfile() {
@@ -130,7 +130,7 @@ export function AnimatedCreatorProfile() {
           {/* Profile image container */}
           <div className="absolute inset-[6px] rounded-full overflow-hidden">
             <img
-              src={profileAvatar}
+              src={creatorProfile}
               alt="Creator"
               className="w-full h-full object-cover"
               loading="eager"
