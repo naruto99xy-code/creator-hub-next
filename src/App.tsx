@@ -21,6 +21,7 @@ import Blog from "./pages/Blog";
 import Tutorials from "./pages/Tutorials";
 import Docs from "./pages/Docs";
 import Services from "./pages/Services";
+import Success from "./pages/Success";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/tutorials" element={<Tutorials />} />
             <Route path="/docs" element={<Docs />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/success" element={<Success />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
