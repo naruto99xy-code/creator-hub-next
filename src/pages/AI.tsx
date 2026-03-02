@@ -1,4 +1,5 @@
 import { Layout } from '@/components/layout/Layout';
+import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
 import { motion } from 'framer-motion';
 import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock } from 'lucide-react';
 import { useRazorpay } from '@/hooks/useRazorpay';
@@ -298,6 +299,9 @@ export default function AI() {
           </motion.p>
         </div>
       </section>
+
+      {/* MYRA 2.0 Features */}
+      <Myra2FeaturesSection />
 
       {/* AI Products */}
       <section className="pb-24 relative overflow-hidden">
