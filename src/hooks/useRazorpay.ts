@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth';
 
 // Razorpay publishable key (safe for client-side usage)
-const RAZORPAY_KEY_ID = 'rzp_test_SGJlMugI0Soq4A';
+const RAZORPAY_KEY_ID = 'rzp_live_SHJ1Thmo1tv1Z6';
 
 declare global {
   interface Window {
