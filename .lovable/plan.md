@@ -1,50 +1,50 @@
 
 
-# Add Missing Indexes + Logo Integration
+# MYRA 2.0 Features Section for /ai Page
 
-## 1. Database Migration: Add Missing Indexes
+## Overview
+Create a new `Myra2FeaturesSection` component and insert it into the `/ai` page between the "Intro" section and the "AI Products" section. This showcases 66+ features grouped into 13 categories with premium glassmorphism cards, glow effects, and scroll animations.
 
-Run a single migration to add the 7 indexes that are documented but missing from the live database:
+## New File
 
-```sql
-CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
-CREATE INDEX IF NOT EXISTS idx_products_is_active ON public.products(is_active);
-CREATE INDEX IF NOT EXISTS idx_supporters_created_at ON public.supporters(created_at);
-CREATE INDEX IF NOT EXISTS idx_supporters_user_id ON public.supporters(user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON public.orders(payment_status);
-CREATE INDEX IF NOT EXISTS idx_memberships_user_id ON public.memberships(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id);
-CREATE INDEX IF NOT EXISTS idx_product_files_product_id ON public.product_files(product_id);
-```
+### `src/components/ai/Myra2FeaturesSection.tsx`
 
-Then update `database/supabase-setup.sql` to document all indexes together.
+A self-contained component containing:
 
-## 2. Add Logo Image to Project
+**Header area:**
+- Title: "MYRA 2.0 Can Do Everything"
+- Subtitle: "70+ Powerful AI Capabilities to Control Your Entire System with Intelligence"
+- Animated "66+ Features" badge with pulsing purple/blue glow border
 
-Copy your uploaded logo (the intertwined infinity-style symbol) to:
-- `public/logo.png` -- for use as site logo and favicon
+**Feature data structure:**
+- An array of 13 category objects, each with a `category` name, a `color` (purple/blue/cyan spectrum), and a `features` string array
+- Categories: Core, Window Control, WhatsApp, Memory, Utils, Mouse & Keyboard, Image Tools, Creative, Screen Reader, System, Desktop, Media Control, PDF Tools, Window Manager
 
-### Where the logo will appear:
+**Category rendering:**
+- Each category gets a heading row with a small colored dot indicator + category name
+- Below it, a responsive grid of feature cards (4 columns desktop, 2 tablet, 1 mobile)
+- Each feature card is a glassmorphism mini-card (backdrop-blur, semi-transparent bg, border glow on hover)
+- Cards use `framer-motion` for fade-in on scroll (`whileInView`) and scale-up on hover (`whileHover: { scale: 1.05 }`)
+- A subtle animated gradient divider separates each category group
 
-- **Favicon** -- Update `index.html` to point to `/logo.png`
-- **Navbar** -- Replace the current `<Code>` icon in `Navbar.tsx` with the logo image
-- **Footer** -- Replace the current `<Code>` icon in `Footer.tsx` with the logo image
-- **Profile card on homepage** -- Replace the `profile-avatar.jpg` in the hero section of `Index.tsx` with the logo
+**Visual effects:**
+- Background: reuse the same subtle radial gradient blobs (purple/blue) as existing sections
+- Cards: `bg-white/5 backdrop-blur-md border border-white/10` with hover state `border-purple-500/40 shadow-[0_0_20px_rgba(139,92,246,0.3)]`
+- Badge: `animate-pulse` shadow with purple glow
+- Each feature card shows a small lucide icon (a generic one like `Cpu` or `Terminal`) + feature name
 
-### What stays the same:
-- No changes to database tables, authentication, or payment logic
-- The "Next Developer" text branding stays alongside the logo
-- Dark theme styling preserved
+## Modified File
 
-## Files Changed
+### `src/pages/AI.tsx`
+- Import `Myra2FeaturesSection` from `@/components/ai/Myra2FeaturesSection`
+- Insert `<Myra2FeaturesSection />` between the Intro section and the AI Products section (after line 300, before line 302)
+- No other changes -- hero, intro, and product cards remain untouched
 
-| File | Change |
-|---|---|
-| `public/logo.png` | New -- copied from upload |
-| `index.html` | Update favicon to `/logo.png` |
-| `src/components/layout/Navbar.tsx` | Replace Code icon with logo image |
-| `src/components/layout/Footer.tsx` | Replace Code icon with logo image |
-| `src/pages/Index.tsx` | Use logo in profile card |
-| `database/supabase-setup.sql` | Add all new indexes to documentation |
+## Technical Details
+
+- All animations use `framer-motion` (`motion.div` with `initial`, `whileInView`, `whileHover`)
+- Responsive grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`
+- Lucide icons used per-category (e.g., `Search` for Core, `Monitor` for Window Control, `MessageCircle` for WhatsApp, `Brain` for Memory, `Mouse` for Mouse & Keyboard, etc.)
+- No new dependencies required
+- Component is modular and isolated -- no impact on other pages
 
