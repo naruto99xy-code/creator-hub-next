@@ -61,43 +61,41 @@ export function PaymentModal({ isOpen, onClose, onConfirm, productName, price, g
           />
 
           {/* Processing overlay */}
-          <AnimatePresence>
-            {processing && (
+          {processing && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl"
+            >
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                className="w-16 h-16 rounded-full border-[3px] border-transparent mb-6"
+                style={{
+                  borderTopColor: gradientTo,
+                  borderRightColor: gradientFrom,
+                  boxShadow: `0 0 30px ${gradientFrom}66, 0 0 60px ${gradientTo}33`,
+                }}
+              />
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-foreground font-semibold text-lg"
               >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-                  className="w-16 h-16 rounded-full border-[3px] border-transparent mb-6"
-                  style={{
-                    borderTopColor: gradientTo,
-                    borderRightColor: gradientFrom,
-                    boxShadow: `0 0 30px ${gradientFrom}66, 0 0 60px ${gradientTo}33`,
-                  }}
-                />
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-foreground font-semibold text-lg"
-                >
-                  Securing your payment...
-                </motion.p>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.7 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-muted-foreground text-sm mt-2"
-                >
-                  Please do not close this window
-                </motion.p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                Securing your payment...
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ delay: 0.4 }}
+                className="text-muted-foreground text-sm mt-2"
+              >
+                Please do not close this window
+              </motion.p>
+            </motion.div>
+          )}
 
           {/* Modal card */}
           <motion.div
