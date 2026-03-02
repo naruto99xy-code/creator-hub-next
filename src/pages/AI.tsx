@@ -11,6 +11,9 @@ interface AIProduct {
   badge: string;
   subtitle: string;
   price: number;
+  originalPrice?: number;
+  offerLabel?: string;
+  offerEnd?: Date;
   features: string[];
   buttonText: string;
   gradientFrom: string;
@@ -19,6 +22,8 @@ interface AIProduct {
   icon: React.ReactNode;
   comingSoon?: boolean;
 }
+
+const HOLI_OFFER_END = new Date('2025-03-05T23:59:59+05:30');
 
 const aiProducts: AIProduct[] = [
   {
@@ -47,9 +52,12 @@ const aiProducts: AIProduct[] = [
   },
   {
     name: 'Zara AI',
-    badge: 'MOST POPULAR',
+    badge: '🎨 HOLI OFFER – 30% OFF',
     subtitle: 'Zara AI – Android App',
-    price: 1599,
+    price: 1119,
+    originalPrice: 1599,
+    offerLabel: 'Holi Offer 🎨',
+    offerEnd: HOLI_OFFER_END,
     features: ['Full AI Girlfriend Experience', 'Voice + Chat Support', 'Emotional Intelligence', '24/7 Conversations', 'App-to-App Opening'],
     buttonText: 'Get Zara',
     gradientFrom: '#ec4899',
@@ -59,9 +67,12 @@ const aiProducts: AIProduct[] = [
   },
   {
     name: 'AI Girlfriend',
-    badge: 'EMOTIONAL AI',
+    badge: '🎨 HOLI OFFER – 30% OFF',
     subtitle: 'Realistic AI Companion Experience',
-    price: 1799,
+    price: 1259,
+    originalPrice: 1799,
+    offerLabel: 'Holi Offer 🎨',
+    offerEnd: HOLI_OFFER_END,
     features: ['Emotional Intelligence', 'Voice + Chat Interaction', 'Romantic Personality Modes', 'Daily Conversations', 'Memory Retention'],
     buttonText: 'Get AI Girlfriend',
     gradientFrom: '#f43f5e',
@@ -192,8 +203,21 @@ function AICard({ product, index, onBuy, processing }: { product: AIProduct; ind
         </div>
         <p className="text-sm text-muted-foreground mb-5">{product.subtitle}</p>
         <div className="mb-5">
-          <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
-          <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
+          {product.originalPrice && product.offerEnd && new Date() < product.offerEnd ? (
+            <>
+              <span className="text-lg text-muted-foreground line-through mr-2">₹{product.originalPrice}</span>
+              <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
+              <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
+              <div className="mt-1.5 inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
+                30% OFF
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
+              <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
+            </>
+          )}
         </div>
         <ul className="space-y-2.5 mb-6 flex-1">
           {product.features.map((f) => (
