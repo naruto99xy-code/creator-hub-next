@@ -300,9 +300,6 @@ export default function AI() {
         </div>
       </section>
 
-      {/* MYRA 2.0 Features */}
-      <Myra2FeaturesSection />
-
       {/* AI Products */}
       <section className="pb-24 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
@@ -322,6 +319,9 @@ export default function AI() {
           </div>
         </div>
       </section>
+
+      {/* AI Features Deep Breakdown */}
+      <Myra2FeaturesSection />
     </Layout>
   );
 }
