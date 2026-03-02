@@ -23,6 +23,56 @@ async function verifySignature(orderId: string, paymentId: string, signature: st
   return hex === signature;
 }
 
+async function sendTelegramNotification(
+  productName: string,
+  userName: string,
+  userMobile: string,
+  paymentId: string,
+  orderId: string,
+  amount: number
+) {
+  const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
+  const chatId = Deno.env.get("TELEGRAM_CHAT_ID");
+
+  if (!botToken || !chatId) {
+    console.warn("Telegram credentials not configured, skipping notification");
+    return;
+  }
+
+  const now = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
+  const message = `🎉 *New Payment Received*
+
+📦 *Product:* ${productName}
+👤 *Name:* ${userName}
+📱 *Mobile:* ${userMobile}
+💳 *Payment ID:* \`${paymentId}\`
+🧾 *Order ID:* \`${orderId}\`
+💰 *Amount:* ₹${amount}
+🌐 *Source:* nextdeveloper.in
+🕐 *Time:* ${now}`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "Markdown",
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Telegram send failed:", err);
+    }
+  } catch (err) {
+    console.error("Telegram error:", err);
+    // Don't break payment flow
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -53,7 +103,7 @@ Deno.serve(async (req) => {
     }
 
     const userId = claimsData.claims.sub;
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, product_name, amount } = await req.json();
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, product_name, amount, user_name, user_mobile } = await req.json();
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return new Response(JSON.stringify({ error: "Missing payment details" }), {
@@ -94,6 +144,16 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Send Telegram notification (non-blocking for payment flow)
+    await sendTelegramNotification(
+      product_name || "Unknown",
+      user_name || "N/A",
+      user_mobile || "N/A",
+      razorpay_payment_id,
+      razorpay_order_id,
+      amount || 0
+    );
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

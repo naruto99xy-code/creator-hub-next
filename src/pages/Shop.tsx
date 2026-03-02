@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRazorpay } from '@/hooks/useRazorpay';
+import { PaymentModal } from '@/components/shop/PaymentModal';
 
 interface Product {
   id: string;
@@ -38,7 +39,8 @@ export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
-  const { handlePurchase, processing } = useRazorpay();
+  const { handlePurchaseWithDetails, processing } = useRazorpay();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -55,6 +57,17 @@ export default function Shop() {
 
   const displayProducts = products.length > 0 ? products : sampleProducts;
   const filtered = activeCategory === 'all' ? displayProducts : displayProducts.filter(p => p.category === activeCategory);
+
+  const handleConfirmPurchase = (name: string, mobile: string) => {
+    if (!selectedProduct) return;
+    handlePurchaseWithDetails({
+      productName: selectedProduct.title,
+      price: selectedProduct.price,
+      userName: name,
+      userMobile: mobile,
+    });
+    setSelectedProduct(null);
+  };
 
   return (
     <Layout>
@@ -124,7 +137,7 @@ export default function Shop() {
                       <span className="text-2xl font-bold">₹{product.price}</span>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground"><Download className="w-3 h-3" />{product.download_count}</div>
                     </div>
-                    <GlowButton className="w-full mt-4" disabled={processing} onClick={() => handlePurchase(product.title, product.price)}>
+                    <GlowButton className="w-full mt-4" disabled={processing} onClick={() => setSelectedProduct(product)}>
                       {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
                       Buy Now
                     </GlowButton>
@@ -135,6 +148,18 @@ export default function Shop() {
           )}
         </div>
       </section>
+
+      {/* Payment Modal */}
+      {selectedProduct && (
+        <PaymentModal
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onConfirm={handleConfirmPurchase}
+          productName={selectedProduct.title}
+          price={selectedProduct.price}
+          processing={processing}
+        />
+      )}
     </Layout>
   );
 }
