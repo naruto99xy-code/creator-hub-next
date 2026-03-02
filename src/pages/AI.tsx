@@ -231,6 +231,7 @@ function AICard({ product, index, onBuy, processing }: { product: AIProduct; ind
 
 export default function AI() {
   const { handlePurchaseWithDetails, processing } = useRazorpay();
+  // No auth required - direct purchase flow
   const [selectedProduct, setSelectedProduct] = useState<AIProduct | null>(null);
 
   const handleBuy = (product: AIProduct) => {

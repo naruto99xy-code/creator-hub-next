@@ -69,7 +69,6 @@ async function sendTelegramNotification(
     }
   } catch (err) {
     console.error("Telegram error:", err);
-    // Don't break payment flow
   }
 }
 
@@ -79,30 +78,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const userId = claimsData.claims.sub;
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, product_name, amount, user_name, user_mobile } = await req.json();
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -122,14 +97,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Use service role to insert purchase
+    // Store purchase using service role
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
     const { error: insertError } = await adminClient.from("purchases").insert({
-      user_id: userId,
+      user_id: "00000000-0000-0000-0000-000000000000",
       product_name: product_name || "Unknown Product",
       amount: amount || 0,
       razorpay_order_id,
@@ -139,13 +114,10 @@ Deno.serve(async (req) => {
 
     if (insertError) {
       console.error("Insert error:", insertError);
-      return new Response(JSON.stringify({ error: "Failed to record purchase" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      // Don't fail the payment flow for DB errors
     }
 
-    // Send Telegram notification (non-blocking for payment flow)
+    // Send Telegram notification
     await sendTelegramNotification(
       product_name || "Unknown",
       user_name || "N/A",
