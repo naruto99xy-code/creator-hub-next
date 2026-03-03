@@ -203,7 +203,7 @@ export default function Services() {
                 Start Your Project <ArrowRight className="w-5 h-5" />
               </GlowButton>
             </a>
-            <a href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/919866994058?text=Hi%2C%20I%20want%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer">
               <GlowButton variant="outline" size="lg">
                 <MessageCircle className="w-5 h-5" />
                 WhatsApp Consultation
@@ -432,7 +432,7 @@ export default function Services() {
 
           <div className="max-w-2xl mx-auto">
             <div className="flex flex-wrap justify-center gap-4 mb-10">
-              <a href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/919866994058?text=Hi%2C%20I%20want%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer">
                 <GlowButton size="lg">
                   <MessageCircle className="w-5 h-5" /> WhatsApp
                 </GlowButton>
