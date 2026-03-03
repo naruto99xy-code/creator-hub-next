@@ -2,9 +2,9 @@ import { Layout } from '@/components/layout/Layout';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
-const TELEGRAM_URL = 'https://t.me/krishnaking407';
+const TELEGRAM_USERNAME = 'krishnaking407';
 const REDIRECT_SECONDS = 3;
 
 function AnimatedCheckmark() {
@@ -54,21 +54,39 @@ export default function Success() {
   const product = searchParams.get('product') || 'Your Product';
   const paymentId = searchParams.get('payment_id') || '';
   const amount = searchParams.get('amount') || '';
+  const orderId = searchParams.get('order_id') || '';
+  const userName = searchParams.get('name') || '';
+  const userMobile = searchParams.get('mobile') || '';
   const [countdown, setCountdown] = useState(REDIRECT_SECONDS);
+
+  const telegramUrl = useMemo(() => {
+    const now = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+    const message = `🎉 New Payment Received
+
+📦 Product: ${product}
+👤 Name: ${userName}
+📱 Mobile: ${userMobile}
+💳 Payment ID: ${paymentId}
+🧾 Order ID: ${orderId}
+💰 Amount: ₹${amount}
+🌐 Source: nextdeveloper.in
+🕐 Time: ${now}`;
+    return `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(message)}`;
+  }, [product, userName, userMobile, paymentId, orderId, amount]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          window.location.href = TELEGRAM_URL;
+          window.location.href = telegramUrl;
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [telegramUrl]);
 
   return (
     <Layout>
@@ -151,7 +169,7 @@ export default function Success() {
             </motion.div>
 
             <a
-              href={TELEGRAM_URL}
+              href={telegramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-primary hover:underline mt-2"

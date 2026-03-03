@@ -84,7 +84,7 @@ export function useRazorpay() {
             }
 
             toast.success('Payment Successful 🎉');
-            window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}&amount=${price}`;
+            window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&amount=${price}&name=${encodeURIComponent(userName)}&mobile=${encodeURIComponent(userMobile)}`;
           } catch {
             toast.error('Verification error. Contact support.');
             setProcessing(false);
