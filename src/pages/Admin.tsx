@@ -213,7 +213,8 @@ export default function Admin() {
                           <p className="font-medium">{p.title}</p>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <span>₹{p.price}</span>
-                            {p.file_url && <span className="text-green-500 flex items-center gap-1"><FileText className="w-3 h-3" /> File</span>}
+                         {p.file_url && <span className="text-green-500 flex items-center gap-1"><Link className="w-3 h-3" /> URL</span>}
+                             {p.price === 0 && <span className="text-blue-400 text-xs font-medium">FREE</span>}
                           </div>
                         </div>
                       </div>
