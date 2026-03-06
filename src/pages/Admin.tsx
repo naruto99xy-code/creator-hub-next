@@ -84,9 +84,9 @@ export default function Admin() {
         toast({ title: 'Error', description: 'Failed to add product. Please try again.', variant: 'destructive' });
       } else {
         toast({ title: 'Product added!' });
-        setNewProduct({ title: '', description: '', price: 0, category: '' });
+        setNewProduct({ title: '', description: '', price: 0, category: '', file_url: '' });
         setImageFile(null);
-        setProductFile(null);
+        setPricingType('premium');
         setShowAddProduct(false);
         fetchData();
       }
