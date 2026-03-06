@@ -58,7 +58,7 @@ export default function Admin() {
   };
 
   const addProduct = async () => {
-    if (!newProduct.title || newProduct.price < 1) {
+    if (!newProduct.title || (pricingType === 'premium' && newProduct.price < 1)) {
       toast({ title: 'Fill required fields', variant: 'destructive' });
       return;
     }
