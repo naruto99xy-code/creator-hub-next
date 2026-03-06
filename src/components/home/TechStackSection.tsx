@@ -67,19 +67,40 @@ const technologies = [
 
 export function TechStackSection() {
   return (
-    <section className="py-20 relative">
-      <div className="container mx-auto px-4">
+    <section className="py-24 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-background to-primary/5"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          transition={{ duration: 1 }}
+        />
+        <div className="orb orb-blue w-[350px] h-[350px] top-0 left-1/3" style={{ animationDelay: '1s' }} />
+        <div className="orb orb-purple w-[250px] h-[250px] bottom-0 right-1/4" style={{ animationDelay: '3s' }} />
+        <div className="absolute inset-0 particle-grid opacity-15" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Built With <span className="glow-text">Modern Tech</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <motion.div
+            className="w-24 h-1 bg-gradient-to-r from-secondary to-primary rounded-full mx-auto mt-4 mb-6"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             All projects use industry-standard technologies and best practices.
           </p>
         </motion.div>
@@ -88,12 +109,12 @@ export function TechStackSection() {
           {technologies.map((tech, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              whileHover={{ scale: 1.1, y: -5 }}
-              className="group flex flex-col items-center gap-3 p-6 rounded-xl bg-card/30 border border-border/50 hover:border-primary/50 hover:bg-card/50 transition-all cursor-pointer"
+              initial={{ opacity: 0, y: 40, scale: 0.8, rotate: -5 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: i * 0.1, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.15, y: -8, rotate: 3 }}
+              className="group flex flex-col items-center gap-3 p-6 rounded-xl bg-card/30 border border-border/50 hover:border-primary/50 hover:bg-card/50 transition-all cursor-pointer hover:shadow-[0_0_30px_hsl(var(--primary)/0.2)]"
             >
               <div className="text-muted-foreground group-hover:text-primary transition-colors">
                 {tech.icon}
