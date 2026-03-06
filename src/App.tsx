@@ -34,13 +34,15 @@ const App = () => {
   const handleLoaderComplete = useCallback(() => setShowLoader(false), []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AnimatePresence>
-            {showLoader && <LoadingScreen onComplete={handleLoaderComplete} />}
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AnimatePresence>
+              {showLoader && <LoadingScreen onComplete={handleLoaderComplete} />}
+            </AnimatePresence>
           </AnimatePresence>
           <BrowserRouter>
             <ScrollToTop />
