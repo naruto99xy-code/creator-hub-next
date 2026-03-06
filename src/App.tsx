@@ -43,7 +43,6 @@ const App = () => {
             <AnimatePresence>
               {showLoader && <LoadingScreen onComplete={handleLoaderComplete} />}
             </AnimatePresence>
-          </AnimatePresence>
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
