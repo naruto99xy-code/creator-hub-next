@@ -136,11 +136,35 @@ export default function Admin() {
                   <div className="space-y-3 mb-4 p-4 border border-border rounded-lg">
                     <Input placeholder="Title *" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
                     <Textarea placeholder="Description" value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input type="number" placeholder="Price *" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
-                      <Input placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} />
-                    </div>
+                    <Input placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} />
                     
+                    {/* Free / Premium Toggle */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">Pricing Type</Label>
+                      <RadioGroup value={pricingType} onValueChange={(v) => setPricingType(v as 'free' | 'premium')} className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="free" id="free" />
+                          <Label htmlFor="free" className="cursor-pointer">Free</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="premium" id="premium" />
+                          <Label htmlFor="premium" className="cursor-pointer">Premium</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {pricingType === 'premium' && (
+                      <Input type="number" placeholder="Price (₹) *" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
+                    )}
+                    
+                    {/* Product URL */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Link className="w-4 h-4" /> Product URL (External link to file)
+                      </Label>
+                      <Input placeholder="https://example.com/file.zip" value={newProduct.file_url} onChange={(e) => setNewProduct({ ...newProduct, file_url: e.target.value })} />
+                    </div>
+
                     {/* Image Upload */}
                     <div className="space-y-2">
                       <Label className="text-sm text-muted-foreground flex items-center gap-2">
@@ -161,29 +185,6 @@ export default function Admin() {
                           <p className="text-sm text-primary">{imageFile.name}</p>
                         ) : (
                           <p className="text-sm text-muted-foreground">Click to upload image</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* File Upload */}
-                    <div className="space-y-2">
-                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                        <FileText className="w-4 h-4" /> Digital Product File (ZIP, PDF, etc.)
-                      </Label>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => setProductFile(e.target.files?.[0] || null)}
-                      />
-                      <div 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="border-2 border-dashed border-border rounded-lg p-4 cursor-pointer hover:border-primary/50 transition-colors text-center"
-                      >
-                        {productFile ? (
-                          <p className="text-sm text-primary">{productFile.name}</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Click to upload file</p>
                         )}
                       </div>
                     </div>
