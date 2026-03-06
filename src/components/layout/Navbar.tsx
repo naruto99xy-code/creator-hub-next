@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { Menu, X, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
