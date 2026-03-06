@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { motion } from 'framer-motion';
-import { Lock, Gift, Zap, Percent, MessageCircle, Crown } from 'lucide-react';
+import { Lock, Gift, Zap, Percent, MessageCircle, Crown, FileCode, Video, BookOpen, Palette } from 'lucide-react';
 
 const benefits = [
   { icon: Lock, title: 'Member-Only Templates', desc: 'Exclusive templates not available to free users' },
@@ -10,6 +10,13 @@ const benefits = [
   { icon: Zap, title: 'Early Access', desc: 'Be the first to try new releases and features' },
   { icon: Percent, title: 'Discounts on Products', desc: 'Special pricing on all digital products' },
   { icon: MessageCircle, title: 'Direct Creator Support', desc: 'Priority support and direct communication' },
+];
+
+const lockedContent = [
+  { icon: FileCode, title: 'Pro Dashboard Template', type: 'Template', tag: 'New' },
+  { icon: Video, title: 'Advanced React Patterns', type: 'Video Course', tag: 'Popular' },
+  { icon: BookOpen, title: 'Full-Stack SaaS Guide', type: 'E-Book', tag: 'Exclusive' },
+  { icon: Palette, title: 'UI Component Library', type: 'Resource Pack', tag: 'Premium' },
 ];
 
 export function MembershipBenefitsSection() {
@@ -65,39 +72,61 @@ export function MembershipBenefitsSection() {
             ))}
           </motion.div>
 
-          {/* Premium preview card */}
+          {/* Premium locked content card */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <GlassCard className="relative overflow-hidden" glow>
-              {/* Locked content preview */}
+            <GlassCard className="relative overflow-hidden min-h-[420px]" glow>
               <div className="space-y-4">
-                <div className="flex items-center gap-2 mb-6">
-                  <Crown className="w-6 h-6 text-primary" />
-                  <span className="font-bold text-lg">Premium Content</span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-6 h-6 text-primary" />
+                    <span className="font-bold text-lg">Premium Content</span>
+                  </div>
+                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                    {lockedContent.length} Items Locked
+                  </span>
                 </div>
-                
-                {/* Blurred preview items */}
+
+                {/* Locked content items with actual info */}
                 <div className="space-y-3">
-                  {[1, 2, 3].map((_, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 backdrop-blur-sm">
-                      <div className="w-12 h-12 rounded-lg bg-muted/50 blur-[2px]" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 w-3/4 bg-muted/50 rounded blur-[2px]" />
-                        <div className="h-3 w-1/2 bg-muted/30 rounded blur-[2px]" />
+                  {lockedContent.map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: 0.3 + i * 0.1 }}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 border border-border/30 group"
+                    >
+                      <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <item.icon className="w-5 h-5 text-primary/70" />
                       </div>
-                      <Lock className="w-4 h-4 text-muted-foreground" />
-                    </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm text-foreground/80 truncate">{item.title}</p>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/10 text-secondary font-medium shrink-0">
+                            {item.tag}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{item.type}</p>
+                      </div>
+                      <Lock className="w-4 h-4 text-muted-foreground/60 shrink-0" />
+                    </motion.div>
                   ))}
                 </div>
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-transparent flex items-end justify-center pb-8">
-                  <div className="text-center">
-                    <p className="text-muted-foreground mb-4">Unlock all premium content</p>
+                {/* Overlay with CTA */}
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent flex items-end justify-center pb-8 pointer-events-none">
+                  <div className="text-center pointer-events-auto">
+                    <div className="flex items-center justify-center gap-1 mb-2">
+                      <Lock className="w-4 h-4 text-primary" />
+                      <p className="text-sm font-medium text-foreground">Members Only Access</p>
+                    </div>
+                    <p className="text-muted-foreground text-xs mb-4">Unlock all premium templates, courses & resources</p>
                     <Link to="/membership">
                       <GlowButton size="lg">
                         <Crown className="w-5 h-5" />
