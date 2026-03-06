@@ -5,12 +5,13 @@ import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Package, Heart, DollarSign, Plus, Trash2, Upload, Image, FileText } from 'lucide-react';
+import { Users, Package, Heart, DollarSign, Plus, Trash2, Upload, Image, Link } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function Admin() {
   const { user, isAdmin, loading } = useAuth();
