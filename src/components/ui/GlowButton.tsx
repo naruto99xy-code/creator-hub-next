@@ -24,7 +24,7 @@ export function GlowButton({
   const baseStyles = 'relative font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:shadow-[0_0_40px_hsl(217_91%_60%/0.4)] hover:-translate-y-0.5',
+    primary: 'bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground hover:shadow-[0_0_40px_hsl(var(--primary)/0.5)] hover:-translate-y-0.5',
     secondary: 'bg-muted text-foreground hover:bg-muted/80 border border-border hover:border-primary/50',
     outline: 'bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground',
     ghost: 'bg-transparent text-foreground hover:bg-muted',
