@@ -5,12 +5,13 @@ import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Package, Heart, DollarSign, Plus, Trash2, Upload, Image, FileText } from 'lucide-react';
+import { Users, Package, Heart, DollarSign, Plus, Trash2, Upload, Image, Link } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function Admin() {
   const { user, isAdmin, loading } = useAuth();
@@ -19,12 +20,11 @@ export default function Admin() {
   const [supporters, setSupporters] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [newProduct, setNewProduct] = useState({ title: '', description: '', price: 0, category: '' });
+  const [newProduct, setNewProduct] = useState({ title: '', description: '', price: 0, category: '', file_url: '' });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [productFile, setProductFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [pricingType, setPricingType] = useState<'free' | 'premium'>('premium');
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) navigate('/');
@@ -71,31 +71,22 @@ export default function Admin() {
       if (imageFile) {
         image_url = await uploadFile(imageFile, 'product-images');
       }
-      if (productFile) {
-        const fileExt = productFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const { error } = await supabase.storage.from('product-files').upload(fileName, productFile);
-        if (error) {
-          toast({ title: 'File upload failed', description: 'Could not upload file. Please try again.', variant: 'destructive' });
-          setUploading(false);
-          return;
-        }
-        file_url = fileName; // Store just the filename for private bucket
-      }
-
       const { error } = await supabase.from('products').insert({
-        ...newProduct,
+        title: newProduct.title,
+        description: newProduct.description,
+        price: pricingType === 'free' ? 0 : newProduct.price,
+        category: newProduct.category,
         image_url,
-        file_url
+        file_url: newProduct.file_url || null
       });
       
       if (error) {
         toast({ title: 'Error', description: 'Failed to add product. Please try again.', variant: 'destructive' });
       } else {
         toast({ title: 'Product added!' });
-        setNewProduct({ title: '', description: '', price: 0, category: '' });
+        setNewProduct({ title: '', description: '', price: 0, category: '', file_url: '' });
         setImageFile(null);
-        setProductFile(null);
+        setPricingType('premium');
         setShowAddProduct(false);
         fetchData();
       }
@@ -145,11 +136,35 @@ export default function Admin() {
                   <div className="space-y-3 mb-4 p-4 border border-border rounded-lg">
                     <Input placeholder="Title *" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
                     <Textarea placeholder="Description" value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input type="number" placeholder="Price *" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
-                      <Input placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} />
-                    </div>
+                    <Input placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} />
                     
+                    {/* Free / Premium Toggle */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">Pricing Type</Label>
+                      <RadioGroup value={pricingType} onValueChange={(v) => setPricingType(v as 'free' | 'premium')} className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="free" id="free" />
+                          <Label htmlFor="free" className="cursor-pointer">Free</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="premium" id="premium" />
+                          <Label htmlFor="premium" className="cursor-pointer">Premium</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {pricingType === 'premium' && (
+                      <Input type="number" placeholder="Price (₹) *" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })} />
+                    )}
+                    
+                    {/* Product URL */}
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Link className="w-4 h-4" /> Product URL (External link to file)
+                      </Label>
+                      <Input placeholder="https://example.com/file.zip" value={newProduct.file_url} onChange={(e) => setNewProduct({ ...newProduct, file_url: e.target.value })} />
+                    </div>
+
                     {/* Image Upload */}
                     <div className="space-y-2">
                       <Label className="text-sm text-muted-foreground flex items-center gap-2">
@@ -170,29 +185,6 @@ export default function Admin() {
                           <p className="text-sm text-primary">{imageFile.name}</p>
                         ) : (
                           <p className="text-sm text-muted-foreground">Click to upload image</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* File Upload */}
-                    <div className="space-y-2">
-                      <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                        <FileText className="w-4 h-4" /> Digital Product File (ZIP, PDF, etc.)
-                      </Label>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => setProductFile(e.target.files?.[0] || null)}
-                      />
-                      <div 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="border-2 border-dashed border-border rounded-lg p-4 cursor-pointer hover:border-primary/50 transition-colors text-center"
-                      >
-                        {productFile ? (
-                          <p className="text-sm text-primary">{productFile.name}</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Click to upload file</p>
                         )}
                       </div>
                     </div>
@@ -221,7 +213,8 @@ export default function Admin() {
                           <p className="font-medium">{p.title}</p>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <span>₹{p.price}</span>
-                            {p.file_url && <span className="text-green-500 flex items-center gap-1"><FileText className="w-3 h-3" /> File</span>}
+                         {p.file_url && <span className="text-green-500 flex items-center gap-1"><Link className="w-3 h-3" /> URL</span>}
+                             {p.price === 0 && <span className="text-blue-400 text-xs font-medium">FREE</span>}
                           </div>
                         </div>
                       </div>

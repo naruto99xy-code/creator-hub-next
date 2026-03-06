@@ -3,7 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen } from 'lucide-react';
+import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { PaymentModal } from '@/components/shop/PaymentModal';
@@ -16,6 +16,7 @@ interface Product {
   image_url: string | null;
   category: string | null;
   download_count: number;
+  file_url: string | null;
 }
 
 const categories = [
@@ -27,12 +28,12 @@ const categories = [
 ];
 
 const sampleProducts: Product[] = [
-  { id: '1', title: 'React Dashboard Template', description: 'Modern admin dashboard with dark mode, charts, and responsive layout.', price: 499, image_url: null, category: 'Templates', download_count: 150 },
-  { id: '2', title: 'Landing Page Kit', description: 'Beautiful landing pages for startups with animations and CTA sections.', price: 299, image_url: null, category: 'Templates', download_count: 200 },
-  { id: '3', title: 'API Starter Kit', description: 'Node.js API boilerplate with auth, rate limiting, and database setup.', price: 399, image_url: null, category: 'Tools', download_count: 100 },
-  { id: '4', title: 'Social Media Automation', description: 'Auto-post scheduler for Instagram, Twitter, and LinkedIn.', price: 599, image_url: null, category: 'Automation', download_count: 80 },
-  { id: '5', title: 'Premium UI Component Pack', description: 'Hand-crafted UI components with dark mode and accessibility.', price: 349, image_url: null, category: 'Resources', download_count: 175 },
-  { id: '6', title: 'E-Commerce Website Kit', description: 'Full-stack e-commerce template with cart, payments, and admin panel.', price: 799, image_url: null, category: 'Templates', download_count: 120 },
+  { id: '1', title: 'React Dashboard Template', description: 'Modern admin dashboard with dark mode, charts, and responsive layout.', price: 499, image_url: null, category: 'Templates', download_count: 150, file_url: null },
+  { id: '2', title: 'Landing Page Kit', description: 'Beautiful landing pages for startups with animations and CTA sections.', price: 0, image_url: null, category: 'Templates', download_count: 200, file_url: 'https://example.com' },
+  { id: '3', title: 'API Starter Kit', description: 'Node.js API boilerplate with auth, rate limiting, and database setup.', price: 399, image_url: null, category: 'Tools', download_count: 100, file_url: null },
+  { id: '4', title: 'Social Media Automation', description: 'Auto-post scheduler for Instagram, Twitter, and LinkedIn.', price: 599, image_url: null, category: 'Automation', download_count: 80, file_url: null },
+  { id: '5', title: 'Premium UI Component Pack', description: 'Hand-crafted UI components with dark mode and accessibility.', price: 349, image_url: null, category: 'Resources', download_count: 175, file_url: null },
+  { id: '6', title: 'E-Commerce Website Kit', description: 'Full-stack e-commerce template with cart, payments, and admin panel.', price: 799, image_url: null, category: 'Templates', download_count: 120, file_url: null },
 ];
 
 export default function Shop() {
@@ -49,7 +50,7 @@ export default function Shop() {
   const fetchProducts = async () => {
     const { data } = await supabase
       .from('products')
-      .select('id, title, description, price, image_url, category, download_count')
+      .select('id, title, description, price, image_url, category, download_count, file_url')
       .eq('is_active', true);
     setProducts(data || []);
     setLoading(false);
@@ -134,13 +135,26 @@ export default function Shop() {
                     <h3 className="text-xl font-bold mb-2">{product.title}</h3>
                     <p className="text-muted-foreground text-sm mb-4 flex-1">{product.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">₹{product.price}</span>
+                      {product.price === 0 ? (
+                        <span className="text-lg font-bold text-green-400">FREE</span>
+                      ) : (
+                        <span className="text-2xl font-bold">₹{product.price}</span>
+                      )}
                       <div className="flex items-center gap-1 text-xs text-muted-foreground"><Download className="w-3 h-3" />{product.download_count}</div>
                     </div>
-                    <GlowButton className="w-full mt-4" disabled={processing} onClick={() => setSelectedProduct(product)}>
-                      {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-                      Buy Now
-                    </GlowButton>
+                    {product.price === 0 && product.file_url ? (
+                      <a href={product.file_url} target="_blank" rel="noopener noreferrer" className="w-full mt-4">
+                        <GlowButton className="w-full">
+                          <ExternalLink className="w-4 h-4" />
+                          Get Free
+                        </GlowButton>
+                      </a>
+                    ) : (
+                      <GlowButton className="w-full mt-4" disabled={processing} onClick={() => setSelectedProduct(product)}>
+                        {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
+                        Buy Now
+                      </GlowButton>
+                    )}
                   </GlassCard>
                 </motion.div>
               ))}
