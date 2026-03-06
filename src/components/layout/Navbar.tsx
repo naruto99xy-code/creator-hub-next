@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { Menu, X, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -59,7 +60,8 @@ export function Navbar() {
           </div>
 
           {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {user ? (
               <>
                 {isAdmin && (
@@ -131,7 +133,11 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-border space-y-2">
+              <div className="flex items-center justify-between pt-4 border-t border-border">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              <div className="pt-2 space-y-2">
                 {user ? (
                   <>
                     {isAdmin && (
