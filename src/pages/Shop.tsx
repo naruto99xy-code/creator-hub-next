@@ -16,6 +16,7 @@ interface Product {
   image_url: string | null;
   category: string | null;
   download_count: number;
+  file_url: string | null;
 }
 
 const categories = [
