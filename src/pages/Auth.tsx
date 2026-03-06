@@ -69,19 +69,15 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 50%, hsl(222 47% 4%) 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        className="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl grid md:grid-cols-2"
-        style={{
-          background: 'hsl(222 47% 8%)',
-          border: '1px solid hsl(217 33% 20%)',
-        }}
+        className="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl grid md:grid-cols-2 bg-card border border-border"
       >
         {/* Left - Illustration */}
-        <div className="hidden md:flex flex-col items-center justify-center p-8 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(222 47% 12%) 0%, hsl(222 47% 8%) 100%)' }}>
+        <div className="hidden md:flex flex-col items-center justify-center p-8 relative overflow-hidden bg-muted/50">
           {/* Subtle glow */}
           <div
             className="absolute w-[300px] h-[300px] rounded-full opacity-20 blur-3xl"
