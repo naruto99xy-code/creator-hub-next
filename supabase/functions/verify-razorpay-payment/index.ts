@@ -72,12 +72,35 @@ async function sendTelegramNotification(
   }
 }
 
+async function getAuthenticatedUserId(req: Request): Promise<string | null> {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+
+  try {
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data?.user) return null;
+    return data.user.id;
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Extract authenticated user ID if available (supports guest checkout too)
+    const authenticatedUserId = await getAuthenticatedUserId(req);
+
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, product_name, amount, user_name, user_mobile } = await req.json();
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -103,8 +126,11 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Use authenticated user ID if available, otherwise use guest placeholder
+    const userId = authenticatedUserId || "00000000-0000-0000-0000-000000000000";
+
     const { error: insertError } = await adminClient.from("purchases").insert({
-      user_id: "00000000-0000-0000-0000-000000000000",
+      user_id: userId,
       product_name: product_name || "Unknown Product",
       amount: amount || 0,
       razorpay_order_id,
@@ -114,7 +140,6 @@ Deno.serve(async (req) => {
 
     if (insertError) {
       console.error("Insert error:", insertError);
-      // Don't fail the payment flow for DB errors
     }
 
     // Send Telegram notification

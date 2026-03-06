@@ -25,18 +25,28 @@ export function useRazorpay() {
     toast.error('Please use the purchase modal');
   };
 
+  const getAuthHeaders = async (): Promise<Record<string, string>> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+    return headers;
+  };
+
   const handlePurchaseWithDetails = async ({ productName, price, userName, userMobile, themeColor }: PurchaseOptions) => {
     if (processing) return;
     setProcessing(true);
 
     try {
-      // Call create-order without auth
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const headers = await getAuthHeaders();
+
       const res = await fetch(
         `https://${projectId}.supabase.co/functions/v1/create-razorpay-order`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ productName, amount: price, userName, userMobile }),
         }
       );
@@ -58,11 +68,12 @@ export function useRazorpay() {
         order_id: orderData.order_id,
         handler: async (response: any) => {
           try {
+            const verifyHeaders = await getAuthHeaders();
             const verifyRes = await fetch(
               `https://${projectId}.supabase.co/functions/v1/verify-razorpay-payment`,
               {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: verifyHeaders,
                 body: JSON.stringify({
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
