@@ -28,12 +28,12 @@ const categories = [
 ];
 
 const sampleProducts: Product[] = [
-  { id: '1', title: 'React Dashboard Template', description: 'Modern admin dashboard with dark mode, charts, and responsive layout.', price: 499, image_url: null, category: 'Templates', download_count: 150 },
-  { id: '2', title: 'Landing Page Kit', description: 'Beautiful landing pages for startups with animations and CTA sections.', price: 299, image_url: null, category: 'Templates', download_count: 200 },
-  { id: '3', title: 'API Starter Kit', description: 'Node.js API boilerplate with auth, rate limiting, and database setup.', price: 399, image_url: null, category: 'Tools', download_count: 100 },
-  { id: '4', title: 'Social Media Automation', description: 'Auto-post scheduler for Instagram, Twitter, and LinkedIn.', price: 599, image_url: null, category: 'Automation', download_count: 80 },
-  { id: '5', title: 'Premium UI Component Pack', description: 'Hand-crafted UI components with dark mode and accessibility.', price: 349, image_url: null, category: 'Resources', download_count: 175 },
-  { id: '6', title: 'E-Commerce Website Kit', description: 'Full-stack e-commerce template with cart, payments, and admin panel.', price: 799, image_url: null, category: 'Templates', download_count: 120 },
+  { id: '1', title: 'React Dashboard Template', description: 'Modern admin dashboard with dark mode, charts, and responsive layout.', price: 499, image_url: null, category: 'Templates', download_count: 150, file_url: null },
+  { id: '2', title: 'Landing Page Kit', description: 'Beautiful landing pages for startups with animations and CTA sections.', price: 0, image_url: null, category: 'Templates', download_count: 200, file_url: 'https://example.com' },
+  { id: '3', title: 'API Starter Kit', description: 'Node.js API boilerplate with auth, rate limiting, and database setup.', price: 399, image_url: null, category: 'Tools', download_count: 100, file_url: null },
+  { id: '4', title: 'Social Media Automation', description: 'Auto-post scheduler for Instagram, Twitter, and LinkedIn.', price: 599, image_url: null, category: 'Automation', download_count: 80, file_url: null },
+  { id: '5', title: 'Premium UI Component Pack', description: 'Hand-crafted UI components with dark mode and accessibility.', price: 349, image_url: null, category: 'Resources', download_count: 175, file_url: null },
+  { id: '6', title: 'E-Commerce Website Kit', description: 'Full-stack e-commerce template with cart, payments, and admin panel.', price: 799, image_url: null, category: 'Templates', download_count: 120, file_url: null },
 ];
 
 export default function Shop() {
