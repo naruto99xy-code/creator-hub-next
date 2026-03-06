@@ -27,10 +27,17 @@ export default function Index() {
     <Layout>
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+        {/* Background with orbs */}
         <div className="absolute inset-0">
-          <img src={heroBanner} alt="Hero Banner" className="w-full h-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
+          <img src={heroBanner} alt="Hero Banner" className="w-full h-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/70 to-background" />
+          {/* Animated orbs */}
+          <div className="orb orb-purple w-[500px] h-[500px] -top-40 -left-40" style={{ animationDelay: '0s' }} />
+          <div className="orb orb-blue w-[400px] h-[400px] top-20 -right-20" style={{ animationDelay: '2s' }} />
+          <div className="orb orb-pink w-[350px] h-[350px] -bottom-20 left-1/3" style={{ animationDelay: '4s' }} />
         </div>
+        {/* Particle grid overlay */}
+        <div className="absolute inset-0 particle-grid opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
