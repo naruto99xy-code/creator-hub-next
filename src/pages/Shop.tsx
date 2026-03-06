@@ -135,13 +135,26 @@ export default function Shop() {
                     <h3 className="text-xl font-bold mb-2">{product.title}</h3>
                     <p className="text-muted-foreground text-sm mb-4 flex-1">{product.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">₹{product.price}</span>
+                      {product.price === 0 ? (
+                        <span className="text-lg font-bold text-green-400">FREE</span>
+                      ) : (
+                        <span className="text-2xl font-bold">₹{product.price}</span>
+                      )}
                       <div className="flex items-center gap-1 text-xs text-muted-foreground"><Download className="w-3 h-3" />{product.download_count}</div>
                     </div>
-                    <GlowButton className="w-full mt-4" disabled={processing} onClick={() => setSelectedProduct(product)}>
-                      {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-                      Buy Now
-                    </GlowButton>
+                    {product.price === 0 && product.file_url ? (
+                      <a href={product.file_url} target="_blank" rel="noopener noreferrer" className="w-full mt-4">
+                        <GlowButton className="w-full">
+                          <ExternalLink className="w-4 h-4" />
+                          Get Free
+                        </GlowButton>
+                      </a>
+                    ) : (
+                      <GlowButton className="w-full mt-4" disabled={processing} onClick={() => setSelectedProduct(product)}>
+                        {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
+                        Buy Now
+                      </GlowButton>
+                    )}
                   </GlassCard>
                 </motion.div>
               ))}
