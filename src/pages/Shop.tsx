@@ -50,7 +50,7 @@ export default function Shop() {
   const fetchProducts = async () => {
     const { data } = await supabase
       .from('products')
-      .select('id, title, description, price, image_url, category, download_count')
+      .select('id, title, description, price, image_url, category, download_count, file_url')
       .eq('is_active', true);
     setProducts(data || []);
     setLoading(false);
