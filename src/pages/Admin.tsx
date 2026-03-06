@@ -71,22 +71,13 @@ export default function Admin() {
       if (imageFile) {
         image_url = await uploadFile(imageFile, 'product-images');
       }
-      if (productFile) {
-        const fileExt = productFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const { error } = await supabase.storage.from('product-files').upload(fileName, productFile);
-        if (error) {
-          toast({ title: 'File upload failed', description: 'Could not upload file. Please try again.', variant: 'destructive' });
-          setUploading(false);
-          return;
-        }
-        file_url = fileName; // Store just the filename for private bucket
-      }
-
       const { error } = await supabase.from('products').insert({
-        ...newProduct,
+        title: newProduct.title,
+        description: newProduct.description,
+        price: pricingType === 'free' ? 0 : newProduct.price,
+        category: newProduct.category,
         image_url,
-        file_url
+        file_url: newProduct.file_url || null
       });
       
       if (error) {
