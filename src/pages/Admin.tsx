@@ -20,12 +20,11 @@ export default function Admin() {
   const [supporters, setSupporters] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [newProduct, setNewProduct] = useState({ title: '', description: '', price: 0, category: '' });
+  const [newProduct, setNewProduct] = useState({ title: '', description: '', price: 0, category: '', file_url: '' });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [productFile, setProductFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [pricingType, setPricingType] = useState<'free' | 'premium'>('premium');
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) navigate('/');
