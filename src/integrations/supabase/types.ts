@@ -278,7 +278,7 @@ export type Database = {
           product_name: string
           razorpay_order_id: string | null
           razorpay_payment_id: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           amount: number
@@ -288,7 +288,7 @@ export type Database = {
           product_name: string
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           amount?: number
@@ -298,7 +298,7 @@ export type Database = {
           product_name?: string
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }

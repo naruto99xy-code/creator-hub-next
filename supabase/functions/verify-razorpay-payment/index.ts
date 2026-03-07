@@ -126,11 +126,8 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Use authenticated user ID if available, otherwise use guest placeholder
-    const userId = authenticatedUserId || "00000000-0000-0000-0000-000000000000";
-
     const { error: insertError } = await adminClient.from("purchases").insert({
-      user_id: userId,
+      user_id: authenticatedUserId || null,
       product_name: product_name || "Unknown Product",
       amount: amount || 0,
       razorpay_order_id,
