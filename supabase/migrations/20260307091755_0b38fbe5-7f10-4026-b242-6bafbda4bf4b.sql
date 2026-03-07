@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Authenticated users can download product files" ON storage.objects;
