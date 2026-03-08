@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { SideBadge } from './SideBadge';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +12,7 @@ export function Layout({ children, hideFooter = false }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <SideBadge />
       <main className="flex-1 pt-16">
         {children}
       </main>
