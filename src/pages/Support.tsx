@@ -80,7 +80,11 @@ export default function Support() {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div><Label>Your Name *</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" /></div>
-                  <div><Label>Email (optional)</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></div>
+                  <div><Label>Mobile Number *</Label><Input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="10-digit mobile" /></div>
+                </div>
+                <div>
+                  <Label>Email (optional)</Label>
+                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
                 </div>
 
                 <div><Label>Message (optional)</Label><Textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Say something nice..." rows={3} /></div>
