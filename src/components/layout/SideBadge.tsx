@@ -4,7 +4,7 @@ export function SideBadge() {
       className="side-badge hidden md:block"
       style={{
         position: 'fixed',
-        left: '-55px',
+        left: '-65px',
         top: '50%',
         transform: 'translateY(-50%) rotate(-90deg)',
         transformOrigin: 'center',
