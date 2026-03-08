@@ -21,21 +21,26 @@ export default function Support() {
   const [amount, setAmount] = useState(199);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [message, setMessage] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const { handlePurchase, processing } = useRazorpay();
+  const { handlePurchaseWithDetails, processing } = useRazorpay();
 
   const handleSupport = async () => {
-    if (!name.trim() || amount < 1) {
+    if (!name.trim() || !mobile.trim() || amount < 1) {
       toast({ title: 'Please fill in required fields', variant: 'destructive' });
+      return;
+    }
+    if (!/^\d{10}$/.test(mobile.trim())) {
+      toast({ title: 'Enter a valid 10-digit mobile number', variant: 'destructive' });
       return;
     }
 
     const label = isMonthly ? `Monthly Support - ₹${amount}` : `One-time Support - ₹${amount}`;
-    handlePurchase(label, amount);
+    handlePurchaseWithDetails({ productName: label, price: amount, userName: name.trim(), userMobile: mobile.trim() });
   };
 
   return (
