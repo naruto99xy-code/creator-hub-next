@@ -41,27 +41,7 @@ export function FeaturesSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            What You'll <span className="glow-text relative inline-block">Find Here
-              {/* Animated underline */}
-              <motion.span
-                className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
-                style={{
-                  background: 'linear-gradient(90deg, hsl(262 83% 58%), hsl(230 80% 56%), hsl(280 70% 60%))',
-                  backgroundSize: '200% 100%',
-                  filter: 'blur(0.5px)',
-                  boxShadow: '0 0 12px hsl(262 83% 58% / 0.5)',
-                }}
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.4, ease: 'easeOut' }}
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                }}
-                // @ts-ignore
-                transition2={{ duration: 3, repeat: Infinity }}
-              />
-            </span>
+            What You'll <span className="glow-text">Find Here</span>
           </motion.h2>
           <motion.div
             className="w-32 h-[3px] rounded-full mx-auto mt-6 mb-6 relative overflow-hidden"
