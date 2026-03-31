@@ -58,7 +58,16 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+const sanitizeId = (id: string): string => {
+  return id.replace(/[^a-zA-Z0-9-_]/g, '');
+};
+
+const isValidColor = (color: string): boolean => {
+  return /^(#[0-9a-fA-F]{3,8}|rgb|hsl|var\(|oklch|lch|lab|oklab|color\()/.test(color);
+};
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const safeId = sanitizeId(id);
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
   if (!colorConfig.length) {
@@ -71,11 +80,11 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart=${safeId}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    return color && isValidColor(color) ? `  --color-${key}: ${color};` : null;
   })
   .join("\n")}
 }
