@@ -1,9 +1,9 @@
 import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
-import { Layout, Rocket, Code2, RefreshCw, Users } from 'lucide-react';
+import { LayoutDashboard, Rocket, Code2, RefreshCw, Users } from 'lucide-react';
 
 const features = [
-  { icon: Layout, title: 'Premium Templates', desc: 'Production-ready templates for dashboards, landing pages, and web apps.' },
+  { icon: LayoutDashboard, title: 'Premium Templates', desc: 'Production-ready templates for dashboards, landing pages, and web apps.' },
   { icon: Rocket, title: 'Real-World Projects', desc: 'Learn by building complete projects with modern best practices.' },
   { icon: Code2, title: 'Clean Code & Best Practices', desc: 'Well-documented, maintainable code following industry standards.' },
   { icon: RefreshCw, title: 'Regular Updates', desc: 'New templates and projects added every week to keep you ahead.' },
@@ -13,7 +13,6 @@ const features = [
 export function FeaturesSection() {
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Animated background */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute inset-0 bg-gradient-to-b from-background via-primary/3 to-background"
@@ -35,22 +34,55 @@ export function FeaturesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <motion.h2 
+          <motion.h2
             className="text-3xl md:text-5xl font-bold mb-4"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            What You'll <span className="glow-text">Find Here</span>
+            What You'll <span className="glow-text relative inline-block">Find Here
+              {/* Animated underline */}
+              <motion.span
+                className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
+                style={{
+                  background: 'linear-gradient(90deg, hsl(262 83% 58%), hsl(230 80% 56%), hsl(280 70% 60%))',
+                  backgroundSize: '200% 100%',
+                  filter: 'blur(0.5px)',
+                  boxShadow: '0 0 12px hsl(262 83% 58% / 0.5)',
+                }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.4, ease: 'easeOut' }}
+                animate={{
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                }}
+                // @ts-ignore
+                transition2={{ duration: 3, repeat: Infinity }}
+              />
+            </span>
           </motion.h2>
           <motion.div
-            className="w-24 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mt-4 mb-6"
+            className="w-32 h-[3px] rounded-full mx-auto mt-6 mb-6 relative overflow-hidden"
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-          />
+          >
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'linear-gradient(90deg, hsl(262 83% 58%), hsl(230 80% 56%), hsl(280 70% 60%), hsl(262 83% 58%))',
+                backgroundSize: '200% 100%',
+                boxShadow: '0 0 20px hsl(262 83% 58% / 0.4)',
+              }}
+              animate={{
+                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+            />
+          </motion.div>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Everything you need to level up your development skills and build professional projects.
           </p>
@@ -60,26 +92,30 @@ export function FeaturesSection() {
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              initial={{ opacity: 0, y: 60, scale: 0.9 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group"
             >
-              <GlassCard hover className="h-full group">
+              <div className="glass-card p-6 h-full border border-border/50 hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_40px_hsl(262_83%_58%/0.25)] rounded-xl backdrop-blur-xl"
+                style={{ background: 'rgba(255,255,255,0.03)' }}
+              >
                 <div className="flex items-start gap-4">
-                  <motion.div 
-                    className="p-3 rounded-lg bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors"
-                    whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
-                    transition={{ duration: 0.4 }}
+                  <motion.div
+                    className="p-3 rounded-xl bg-primary/10 border border-primary/20 group-hover:bg-primary/20 group-hover:border-primary/40 transition-all duration-300 group-hover:shadow-[0_0_20px_hsl(262_83%_58%/0.3)]"
+                    whileHover={{ rotate: [0, -8, 8, 0], scale: 1.15 }}
+                    transition={{ duration: 0.5 }}
                   >
-                    <feature.icon className="w-6 h-6 text-primary" />
+                    <feature.icon className="w-6 h-6 text-primary group-hover:drop-shadow-[0_0_8px_hsl(262_83%_58%/0.6)]" />
                   </motion.div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
                     <p className="text-muted-foreground text-sm">{feature.desc}</p>
                   </div>
                 </div>
-              </GlassCard>
+              </div>
             </motion.div>
           ))}
         </div>
