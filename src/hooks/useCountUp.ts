@@ -10,16 +10,17 @@ interface UseCountUpOptions {
 }
 
 export function useCountUp({
-  start = 0,
+  start,
   end,
   duration = 2000,
   decimals = 0,
   suffix = '',
   enabled = true,
 }: UseCountUpOptions) {
-  const [count, setCount] = useState(start);
+  // Start from 70% of the end value for a premium feel
+  const actualStart = start ?? Math.floor(end * 0.7);
+  const [count, setCount] = useState(actualStart);
   const [hasStarted, setHasStarted] = useState(false);
-  const countRef = useRef(start);
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -34,11 +35,10 @@ export function useCountUp({
 
       const progress = Math.min((timestamp - startTimeRef.current) / duration, 1);
       
-      // Easing function for smooth animation
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      // easeOutExpo for premium feel
+      const easeOutExpo = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       
-      const currentCount = start + (end - start) * easeOutQuart;
-      countRef.current = currentCount;
+      const currentCount = actualStart + (end - actualStart) * easeOutExpo;
       setCount(currentCount);
 
       if (progress < 1) {
@@ -47,7 +47,7 @@ export function useCountUp({
     };
 
     requestAnimationFrame(animate);
-  }, [enabled, hasStarted, start, end, duration]);
+  }, [enabled, hasStarted, actualStart, end, duration]);
 
   const displayValue = decimals > 0 
     ? count.toFixed(decimals) 
