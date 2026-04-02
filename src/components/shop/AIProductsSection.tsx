@@ -45,7 +45,7 @@ const aiProducts: AIProduct[] = [
     name: 'Zara AI',
     badge: 'MOST POPULAR',
     subtitle: 'Zara AI – Android App',
-    price: 1599,
+    price: 1499,
     features: ['Full AI Girlfriend Experience', 'Voice + Chat Support', 'Emotional Intelligence', '24/7 Conversations', 'App-to-App Opening'],
     buttonText: 'Get Zara',
     gradientFrom: '#ec4899',
