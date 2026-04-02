@@ -27,6 +27,18 @@ const HOLI_OFFER_END = new Date('2025-03-05T23:59:59+05:30');
 
 const aiProducts: AIProduct[] = [
   {
+    name: 'Ariya AI ❤️',
+    badge: 'NEW ARRIVAL',
+    subtitle: 'Your Caring AI Companion',
+    price: 699,
+    features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
+    buttonText: 'Get Ariya',
+    gradientFrom: '#e11d48',
+    gradientTo: '#f43f5e',
+    borderColor: 'border-rose-500/30',
+    icon: <Heart className="w-5 h-5" />,
+  },
+  {
     name: 'Jarvis',
     badge: 'SYSTEM AUTOMATION',
     subtitle: 'AI System Assistant for Power Users',
@@ -49,6 +61,19 @@ const aiProducts: AIProduct[] = [
     gradientTo: '#a855f7',
     borderColor: 'border-violet-500/30',
     icon: <Sparkles className="w-5 h-5" />,
+  },
+  {
+    name: 'Jarvis + Myra Combo',
+    badge: 'COMBO PACK 🔥',
+    subtitle: 'Get Both AI Assistants at a Special Price',
+    price: 1259,
+    originalPrice: 1398,
+    features: ['Everything in Jarvis', 'Everything in Myra 2.0', 'Save ₹139 on Bundle', 'Priority Support', 'Combo Activation Key'],
+    buttonText: 'Buy Combo Pack',
+    gradientFrom: '#7c3aed',
+    gradientTo: '#06b6d4',
+    borderColor: 'border-purple-500/30',
+    icon: <Package className="w-5 h-5" />,
   },
   {
     name: 'Zara AI',
@@ -99,18 +124,6 @@ const aiProducts: AIProduct[] = [
     borderColor: 'border-amber-500/30',
     icon: <Zap className="w-5 h-5" />,
     comingSoon: true,
-  },
-  {
-    name: 'Ariya AI ❤️',
-    badge: 'NEW ARRIVAL',
-    subtitle: 'Your Caring AI Companion',
-    price: 699,
-    features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
-    buttonText: 'Get Ariya',
-    gradientFrom: '#e11d48',
-    gradientTo: '#f43f5e',
-    borderColor: 'border-rose-500/30',
-    icon: <Heart className="w-5 h-5" />,
   },
 ];
 
