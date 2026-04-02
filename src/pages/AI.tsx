@@ -66,7 +66,7 @@ const aiProducts: AIProduct[] = [
     name: 'AI Girlfriend',
     badge: 'AI COMPANION',
     subtitle: 'Realistic AI Companion Experience',
-    price: 1799,
+    price: 1599,
     features: ['Emotional Intelligence', 'Voice + Chat Interaction', 'Romantic Personality Modes', 'Daily Conversations', 'Memory Retention'],
     buttonText: 'Get AI Girlfriend',
     gradientFrom: '#f43f5e',

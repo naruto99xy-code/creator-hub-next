@@ -21,7 +21,7 @@ const aiProducts: AIProduct[] = [
     name: 'Jarvis',
     badge: 'SYSTEM AUTOMATION',
     subtitle: 'AI System Assistant for Power Users',
-    price: 899,
+    price: 699,
     features: ['Voice Input (8 voices)', 'Full System Automation', 'Windows Management', 'WhatsApp Automation', 'PC Power Control'],
     buttonText: 'Buy Jarvis',
     gradientFrom: '#0d9488',
