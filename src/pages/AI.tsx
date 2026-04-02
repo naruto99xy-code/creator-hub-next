@@ -1,7 +1,7 @@
 import { Layout } from '@/components/layout/Layout';
 import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
 import { motion } from 'framer-motion';
-import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock } from 'lucide-react';
+import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock, Package } from 'lucide-react';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { useEffect, useRef, useState } from 'react';
 import { PaymentModal } from '@/components/shop/PaymentModal';
@@ -27,6 +27,18 @@ const HOLI_OFFER_END = new Date('2025-03-05T23:59:59+05:30');
 
 const aiProducts: AIProduct[] = [
   {
+    name: 'Ariya AI ❤️',
+    badge: 'NEW ARRIVAL',
+    subtitle: 'Your Caring AI Companion',
+    price: 699,
+    features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
+    buttonText: 'Get Ariya',
+    gradientFrom: '#e11d48',
+    gradientTo: '#f43f5e',
+    borderColor: 'border-rose-500/30',
+    icon: <Heart className="w-5 h-5" />,
+  },
+  {
     name: 'Jarvis',
     badge: 'SYSTEM AUTOMATION',
     subtitle: 'AI System Assistant for Power Users',
@@ -49,6 +61,19 @@ const aiProducts: AIProduct[] = [
     gradientTo: '#a855f7',
     borderColor: 'border-violet-500/30',
     icon: <Sparkles className="w-5 h-5" />,
+  },
+  {
+    name: 'Jarvis + Myra Combo',
+    badge: 'COMBO PACK 🔥',
+    subtitle: 'Get Both AI Assistants at a Special Price',
+    price: 1259,
+    originalPrice: 1398,
+    features: ['Everything in Jarvis', 'Everything in Myra 2.0', 'Save ₹139 on Bundle', 'Priority Support', 'Combo Activation Key'],
+    buttonText: 'Buy Combo Pack',
+    gradientFrom: '#7c3aed',
+    gradientTo: '#06b6d4',
+    borderColor: 'border-purple-500/30',
+    icon: <Package className="w-5 h-5" />,
   },
   {
     name: 'Zara AI',
@@ -99,18 +124,6 @@ const aiProducts: AIProduct[] = [
     borderColor: 'border-amber-500/30',
     icon: <Zap className="w-5 h-5" />,
     comingSoon: true,
-  },
-  {
-    name: 'Ariya AI ❤️',
-    badge: 'NEW ARRIVAL',
-    subtitle: 'Your Caring AI Companion',
-    price: 699,
-    features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
-    buttonText: 'Get Ariya',
-    gradientFrom: '#e11d48',
-    gradientTo: '#f43f5e',
-    borderColor: 'border-rose-500/30',
-    icon: <Heart className="w-5 h-5" />,
   },
 ];
 
@@ -209,14 +222,16 @@ function AICard({ product, index, onBuy, processing }: { product: AIProduct; ind
         </div>
         <p className="text-sm text-muted-foreground mb-5">{product.subtitle}</p>
         <div className="mb-5">
-          {product.originalPrice && product.offerEnd && new Date() < product.offerEnd ? (
+          {product.originalPrice && (!product.offerEnd || new Date() < product.offerEnd) ? (
             <>
               <span className="text-lg text-muted-foreground line-through mr-2">₹{product.originalPrice}</span>
               <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
               <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
-              <div className="mt-1.5 inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
-                30% OFF
-              </div>
+              {product.offerLabel && (
+                <div className="mt-1.5 inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
+                  {product.offerLabel}
+                </div>
+              )}
             </>
           ) : (
             <>
