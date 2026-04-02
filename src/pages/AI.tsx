@@ -57,6 +57,7 @@ const aiProducts: AIProduct[] = [
     badge: 'PERSONAL ASSISTANT',
     subtitle: 'AI Personal Voice Assistant',
     price: 699,
+    originalPrice: 899,
     features: ['Human-like Voice', 'Daily Automation', 'Smart Task Manager', 'News Updates', 'Music Playback'],
     buttonText: 'Buy Myra',
     gradientFrom: '#7c3aed',
