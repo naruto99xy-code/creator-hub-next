@@ -31,6 +31,7 @@ const aiProducts: AIProduct[] = [
     badge: 'NEW ARRIVAL',
     subtitle: 'Your Caring AI Companion',
     price: 699,
+    originalPrice: 899,
     features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
     buttonText: 'Get Ariya',
     gradientFrom: '#e11d48',
