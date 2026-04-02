@@ -77,6 +77,18 @@ const aiProducts: AIProduct[] = [
     borderColor: 'border-cyan-500/30',
     icon: <Brain className="w-5 h-5" />,
   },
+  {
+    name: 'Ariya AI ❤️',
+    badge: 'NEW ARRIVAL',
+    subtitle: 'Your Caring AI Companion',
+    price: 699,
+    features: ['Empathetic Conversations', 'Personalized Responses', 'Voice & Text Chat', 'Mood Detection', 'Daily Motivation'],
+    buttonText: 'Get Ariya',
+    gradientFrom: '#e11d48',
+    gradientTo: '#f43f5e',
+    borderColor: 'border-rose-500/30',
+    icon: <Heart className="w-5 h-5" />,
+  },
 ];
 
 function FloatingParticles() {
