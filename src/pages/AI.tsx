@@ -222,14 +222,16 @@ function AICard({ product, index, onBuy, processing }: { product: AIProduct; ind
         </div>
         <p className="text-sm text-muted-foreground mb-5">{product.subtitle}</p>
         <div className="mb-5">
-          {product.originalPrice && product.offerEnd && new Date() < product.offerEnd ? (
+          {product.originalPrice && (!product.offerEnd || new Date() < product.offerEnd) ? (
             <>
               <span className="text-lg text-muted-foreground line-through mr-2">₹{product.originalPrice}</span>
               <span className="text-3xl font-extrabold text-foreground">₹{product.price}</span>
               <span className="text-xs text-muted-foreground ml-2">(one-time)</span>
-              <div className="mt-1.5 inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
-                30% OFF
-              </div>
+              {product.offerLabel && (
+                <div className="mt-1.5 inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
+                  {product.offerLabel}
+                </div>
+              )}
             </>
           ) : (
             <>
