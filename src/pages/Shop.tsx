@@ -3,7 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen, ExternalLink } from 'lucide-react';
+import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { PaymentModal } from '@/components/shop/PaymentModal';
