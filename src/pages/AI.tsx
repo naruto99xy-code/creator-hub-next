@@ -69,7 +69,7 @@ const aiProducts: AIProduct[] = [
     name: 'Jarvis + Myra Combo',
     badge: 'COMBO PACK 🔥',
     subtitle: 'Get Both AI Assistants at a Special Price',
-    price: 1498,
+    price: 1499,
     originalPrice: 1598,
     features: ['Everything in Jarvis', 'Everything in Myra 2.0', 'Save ₹100 on Bundle', 'Priority Support', 'Combo Activation Key'],
     buttonText: 'Buy Combo Pack',
