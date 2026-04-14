@@ -181,11 +181,27 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <section className="relative py-12 overflow-hidden">
-        {/* Background orbs */}
+      <section className="relative py-12 overflow-hidden min-h-screen">
+        {/* Animated background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-10 left-[15%] w-64 h-64 bg-primary/8 rounded-full blur-3xl animate-[pulse_5s_ease-in-out_infinite]" />
-          <div className="absolute bottom-20 right-[10%] w-72 h-72 bg-pink-500/8 rounded-full blur-3xl animate-[pulse_6s_ease-in-out_infinite_2s]" />
+          {/* Large gradient orbs */}
+          <div className="absolute top-10 left-[10%] w-80 h-80 bg-primary/10 rounded-full blur-[100px] animate-[pulse_5s_ease-in-out_infinite]" />
+          <div className="absolute bottom-20 right-[5%] w-96 h-96 bg-pink-500/10 rounded-full blur-[120px] animate-[pulse_6s_ease-in-out_infinite_2s]" />
+          <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-72 h-72 bg-secondary/8 rounded-full blur-[100px] animate-[pulse_7s_ease-in-out_infinite_1s]" />
+          <div className="absolute top-[20%] right-[20%] w-48 h-48 bg-purple-500/8 rounded-full blur-[80px] animate-[pulse_8s_ease-in-out_infinite_3s]" />
+          
+          {/* Grid pattern */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px)`,
+              backgroundSize: '60px 60px',
+            }}
+          />
+          
+          {/* Radial gradient overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.05)_0%,transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--secondary)/0.05)_0%,transparent_50%)]" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10 max-w-5xl">
