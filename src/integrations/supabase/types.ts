@@ -63,6 +63,8 @@ export type Database = {
           is_premium: boolean
           js_code: string | null
           js_intro: string | null
+          price: number
+          publish_sections: string[]
           rating: number
           software_compatibility: string[] | null
           tags: string[] | null
@@ -89,6 +91,8 @@ export type Database = {
           is_premium?: boolean
           js_code?: string | null
           js_intro?: string | null
+          price?: number
+          publish_sections?: string[]
           rating?: number
           software_compatibility?: string[] | null
           tags?: string[] | null
@@ -115,6 +119,8 @@ export type Database = {
           is_premium?: boolean
           js_code?: string | null
           js_intro?: string | null
+          price?: number
+          publish_sections?: string[]
           rating?: number
           software_compatibility?: string[] | null
           tags?: string[] | null
