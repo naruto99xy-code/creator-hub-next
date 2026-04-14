@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Upload, X, Image, Code, Info, Eye } from 'lucide-react';
+import { Upload, X, Image, Code, Info, Eye, LayoutGrid } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export interface MaterialFormData {
@@ -81,12 +81,15 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
   return (
     <div className="space-y-4">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="w-full grid grid-cols-4 bg-muted/50">
+        <TabsList className="w-full grid grid-cols-5 bg-muted/50">
           <TabsTrigger value="basic" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Image className="w-3.5 h-3.5" /> Basic
           </TabsTrigger>
           <TabsTrigger value="code" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Code className="w-3.5 h-3.5" /> Code
+          </TabsTrigger>
+          <TabsTrigger value="detail" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <LayoutGrid className="w-3.5 h-3.5" /> Detail
           </TabsTrigger>
           <TabsTrigger value="info" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Info className="w-3.5 h-3.5" /> Info
