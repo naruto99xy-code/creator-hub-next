@@ -58,6 +58,7 @@ export default function Admin() {
               supportersCount={supporters.length}
               materialsCount={materials.length}
               totalRevenue={totalRevenue}
+              supporters={supporters}
             />
 
             <AdminCharts supporters={supporters} materials={materials} />
