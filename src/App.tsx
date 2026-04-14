@@ -28,6 +28,7 @@ import Services from "./pages/Services";
 import Success from "./pages/Success";
 import PaymentFailed from "./pages/PaymentFailed";
 import ProductDetail from "./pages/ProductDetail";
+import ResetPassword from "./pages/ResetPassword";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -49,6 +50,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/support" element={<Support />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/ai" element={<AI />} />
