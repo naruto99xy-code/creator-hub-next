@@ -142,6 +142,16 @@ export default function Shop() {
         </div>
 
         <div className="container mx-auto px-4 text-center relative z-10">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6"
+          >
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Developer Marketplace</span>
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,34 +166,34 @@ export default function Shop() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground max-w-2xl mx-auto text-lg mb-10"
+            className="text-muted-foreground max-w-2xl mx-auto text-lg"
           >
             Hand-crafted tools, templates & resources to supercharge your development workflow
           </motion.p>
 
-          {/* Floating feature pills */}
+          {/* Quick stats */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-wrap justify-center gap-3"
+            className="flex items-center justify-center gap-6 mt-8"
           >
             {[
-              { text: '🚀 Production Ready', gradient: 'from-blue-500/15 to-cyan-500/15 border-blue-500/25' },
-              { text: '⚡ Instant Access', gradient: 'from-amber-500/15 to-orange-500/15 border-amber-500/25' },
-              { text: '🔄 Free Updates', gradient: 'from-green-500/15 to-emerald-500/15 border-green-500/25' },
-              { text: '💎 Premium Quality', gradient: 'from-purple-500/15 to-pink-500/15 border-purple-500/25' },
-            ].map((pill, i) => (
-              <motion.span
-                key={pill.text}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.08, type: 'spring', stiffness: 200 }}
-                whileHover={{ scale: 1.08, y: -3 }}
-                className={`px-4 py-2 rounded-full bg-gradient-to-r ${pill.gradient} border text-sm font-medium cursor-default`}
+              { icon: Package, label: 'Products', value: displayProducts.length, color: 'text-blue-400' },
+              { icon: Download, label: 'Downloads', value: '1K+', color: 'text-green-400' },
+              { icon: Star, label: 'Rating', value: '4.9', color: 'text-yellow-400' },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/30 border border-border/30"
               >
-                {pill.text}
-              </motion.span>
+                <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                <span className="font-bold text-sm">{stat.value}</span>
+                <span className="text-xs text-muted-foreground hidden sm:inline">{stat.label}</span>
+              </motion.div>
             ))}
           </motion.div>
         </div>
