@@ -278,20 +278,21 @@ export default function ProductDetail() {
 
                 {/* Live Site Card */}
                 {(material.live_site_price > 0 || material.live_site_file_url) && (
-                  <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent p-5 space-y-4 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+                  <div className="group rounded-2xl border-2 border-emerald-500/30 bg-gradient-to-b from-emerald-500/10 via-emerald-500/5 to-transparent p-5 space-y-4 relative overflow-hidden transition-all duration-500 hover:border-emerald-500/60 hover:shadow-[0_0_30px_-5px] hover:shadow-emerald-500/20 hover:scale-[1.02]">
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]" />
+                    <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all duration-700" />
                     <div className="flex items-center gap-2">
-                      <Globe className="w-5 h-5 text-emerald-400" />
+                      <Globe className="w-5 h-5 text-emerald-400 group-hover:animate-[pulse_1.5s_ease-in-out_infinite]" />
                       <h4 className="font-bold text-lg">Live Site</h4>
                     </div>
 
                     <div className="flex items-baseline gap-3 flex-wrap">
-                      <span className="text-3xl font-black text-emerald-400">₹{material.live_site_price}</span>
+                      <span className="text-3xl font-black text-emerald-400 group-hover:text-emerald-300 transition-colors duration-300">₹{material.live_site_price}</span>
                       {material.live_site_original_price > 0 && material.live_site_original_price > material.live_site_price && (
                         <span className="text-lg text-muted-foreground line-through">₹{material.live_site_original_price}</span>
                       )}
                       {liveSaving > 0 && (
-                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]">
                           <Tag className="w-3 h-3" /> Limited Offer
                         </span>
                       )}
@@ -318,7 +319,7 @@ export default function ProductDetail() {
                     <button
                       onClick={() => handleOrder('live')}
                       disabled={processing}
-                      className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 flex items-center justify-center gap-2 border-2 border-red-500/60"
+                      className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 flex items-center justify-center gap-2 border border-emerald-400/40"
                     >
                       <Globe className="w-4 h-4" />
                       Order Live Site
