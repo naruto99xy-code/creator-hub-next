@@ -7,6 +7,7 @@ import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, 
 import { motion } from 'framer-motion';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { PaymentModal } from '@/components/shop/PaymentModal';
+import { ShopHero3D } from '@/components/shop/ShopHero3D';
 
 interface Product {
   id: string;
@@ -120,7 +121,7 @@ export default function Shop() {
 
   return (
     <Layout>
-      <div className="pt-24" />
+      <ShopHero3D />
 
       {/* Category Filters */}
       <section className="pb-8">
