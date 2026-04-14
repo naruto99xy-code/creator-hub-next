@@ -325,30 +325,6 @@ export default function ProductDetail() {
                   </div>
                 )}
               </div>
-                  {material.live_site_note && (
-                    <p className="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-                      {material.live_site_note}
-                    </p>
-                  )}
-
-                  <ul className="space-y-2">
-                    {liveFeatures.map((f, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    onClick={() => handleOrder('live')}
-                    disabled={processing}
-                    className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Globe className="w-4 h-4" />
-                    Order Live Site
-                  </button>
-                </div>
-              )}
             </motion.div>
           </div>
         </div>
