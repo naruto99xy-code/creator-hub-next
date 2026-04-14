@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { getSafeErrorMessage } from '@/lib/safeError';
 import { Coffee, Heart, Sparkles } from 'lucide-react';
+import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 import { motion } from 'framer-motion';
 import logo from '/logo.png';
 
@@ -104,6 +105,7 @@ export default function Support() {
           </motion.div>
         </div>
       </section>
+      <PublishedMaterials section="Support" title="Support Resources" subtitle="Helpful materials and guides" />
     </Layout>
   );
 }

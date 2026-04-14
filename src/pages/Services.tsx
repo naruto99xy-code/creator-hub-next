@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { Loader2 } from 'lucide-react';
+import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -532,6 +533,7 @@ export default function Services() {
           </div>
         </div>
       </section>
+      <PublishedMaterials section="Services" title="Service Resources" subtitle="Templates and tools for your projects" />
     </Layout>
   );
 }
