@@ -60,7 +60,7 @@ export default function Support() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-12 overflow-hidden">
         {/* Animated background orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-10 left-[10%] w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-[pulse_4s_ease-in-out_infinite]" />
@@ -69,7 +69,7 @@ export default function Support() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div {...fadeUp(0)} className="text-center mb-16">
+          <motion.div {...fadeUp(0)} className="text-center mb-10">
             <motion.div
               className="inline-flex p-5 rounded-full bg-gradient-to-br from-primary/20 via-pink-500/20 to-secondary/20 mb-6 relative"
               animate={{ rotate: [0, 5, -5, 0] }}
