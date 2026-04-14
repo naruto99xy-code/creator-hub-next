@@ -224,105 +224,107 @@ export default function ProductDetail() {
                 <p className="text-muted-foreground leading-relaxed">{material.description}</p>
               )}
 
-              <h3 className="text-lg font-bold pt-2">Choose Your Option</h3>
+              <h3 className="text-xl font-bold italic text-primary pt-2">Choose Your Option</h3>
 
-              {/* Premium Code Card */}
-              <div className="rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent p-5 space-y-4 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
-                <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-primary" />
-                  <h4 className="font-bold text-lg">Premium Code</h4>
-                </div>
-
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-black text-primary">₹{material.price}</span>
-                  {material.original_price > 0 && material.original_price > material.price && (
-                    <span className="text-lg text-muted-foreground line-through">₹{material.original_price}</span>
-                  )}
-                </div>
-
-                {premiumSaving > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Premium Code Card */}
+                <div className="rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent p-5 space-y-4 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                      Limited Offer
-                    </span>
-                    <span className="text-sm text-green-400 font-semibold">Save ₹{premiumSaving}</span>
-                  </div>
-                )}
-
-                {material.premium_note && (
-                  <p className="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-                    {material.premium_note}
-                  </p>
-                )}
-
-                <ul className="space-y-2">
-                  {premiumFeatures.map((f, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="w-4 h-4 text-primary flex-shrink-0" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  onClick={() => handleOrder('premium')}
-                  disabled={processing}
-                  className="w-full py-3 rounded-xl font-semibold text-sm text-primary-foreground bg-gradient-to-r from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 flex items-center justify-center gap-2"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  {material.price === 0 ? 'Get Free' : 'Order Premium Code'}
-                </button>
-              </div>
-
-              {/* Live Site Card */}
-              {(material.live_site_price > 0 || material.live_site_file_url) && (
-                <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent p-5 space-y-4 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-emerald-400" />
-                    <h4 className="font-bold text-lg">Live Site</h4>
+                    <span className="text-primary font-mono text-lg">&lt;/&gt;</span>
+                    <h4 className="font-bold text-lg">Premium Code</h4>
                   </div>
 
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-3xl font-black text-emerald-400">₹{material.live_site_price}</span>
-                    {material.live_site_original_price > 0 && material.live_site_original_price > material.live_site_price && (
-                      <span className="text-lg text-muted-foreground line-through">₹{material.live_site_original_price}</span>
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-3xl font-black text-primary">₹{material.price}</span>
+                    {material.original_price > 0 && material.original_price > material.price && (
+                      <span className="text-lg text-muted-foreground line-through">₹{material.original_price}</span>
+                    )}
+                    {premiumSaving > 0 && (
+                      <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                        <Tag className="w-3 h-3" /> Limited Offer
+                      </span>
                     )}
                   </div>
 
-                  {liveSaving > 0 && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                        Limited Offer
-                      </span>
-                      <span className="text-sm text-green-400 font-semibold">Save ₹{liveSaving}</span>
-                    </div>
+                  {premiumSaving > 0 && (
+                    <p className="text-sm text-green-400 font-semibold">Save ₹{premiumSaving}</p>
                   )}
 
-                  {material.live_site_note && (
+                  {material.premium_note && (
                     <p className="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-                      {material.live_site_note}
+                      {material.premium_note}
                     </p>
                   )}
 
                   <ul className="space-y-2">
-                    {liveFeatures.map((f, i) => (
+                    {premiumFeatures.map((f, i) => (
                       <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> {f}
+                        <Check className="w-4 h-4 text-primary flex-shrink-0" /> {f}
                       </li>
                     ))}
                   </ul>
 
                   <button
-                    onClick={() => handleOrder('live')}
+                    onClick={() => handleOrder('premium')}
                     disabled={processing}
-                    className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl font-semibold text-sm text-primary-foreground bg-gradient-to-r from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 flex items-center justify-center gap-2 border-2 border-red-500/60"
                   >
-                    <Globe className="w-4 h-4" />
-                    Order Live Site
+                    <ShieldCheck className="w-4 h-4" />
+                    {material.price === 0 ? 'Get Free' : 'Order Premium Code'}
                   </button>
                 </div>
-              )}
+
+                {/* Live Site Card */}
+                {(material.live_site_price > 0 || material.live_site_file_url) && (
+                  <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent p-5 space-y-4 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-emerald-400" />
+                      <h4 className="font-bold text-lg">Live Site</h4>
+                    </div>
+
+                    <div className="flex items-baseline gap-3 flex-wrap">
+                      <span className="text-3xl font-black text-emerald-400">₹{material.live_site_price}</span>
+                      {material.live_site_original_price > 0 && material.live_site_original_price > material.live_site_price && (
+                        <span className="text-lg text-muted-foreground line-through">₹{material.live_site_original_price}</span>
+                      )}
+                      {liveSaving > 0 && (
+                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                          <Tag className="w-3 h-3" /> Limited Offer
+                        </span>
+                      )}
+                    </div>
+
+                    {liveSaving > 0 && (
+                      <p className="text-sm text-green-400 font-semibold">Save ₹{liveSaving}</p>
+                    )}
+
+                    {material.live_site_note && (
+                      <p className="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
+                        {material.live_site_note}
+                      </p>
+                    )}
+
+                    <ul className="space-y-2">
+                      {liveFeatures.map((f, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      onClick={() => handleOrder('live')}
+                      disabled={processing}
+                      className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 flex items-center justify-center gap-2 border-2 border-red-500/60"
+                    >
+                      <Globe className="w-4 h-4" />
+                      Order Live Site
+                    </button>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
         </div>
