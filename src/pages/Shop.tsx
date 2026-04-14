@@ -279,21 +279,22 @@ export default function Shop() {
                       </div>
                     </div>
 
-                    <GlowButton
-                      className="w-full font-semibold"
-                      disabled={processing}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
-                          navigate(`/shop/${product.id}`);
-                        } else {
-                          setSelectedProduct(product);
-                        }
-                      }}
-                    >
-                      {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-                      {product.price === 0 ? '🎁 Get Free' : '🛒 Buy Now'}
-                    </GlowButton>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <GlowButton
+                        className="w-full font-semibold"
+                        disabled={processing}
+                        onClick={() => {
+                          if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
+                            navigate(`/shop/${product.id}`);
+                          } else {
+                            setSelectedProduct(product);
+                          }
+                        }}
+                      >
+                        {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
+                        {product.price === 0 ? '🎁 Get Free' : '🛒 Buy Now'}
+                      </GlowButton>
+                    </div>
                   </div>
                 </motion.div>
               ))}
