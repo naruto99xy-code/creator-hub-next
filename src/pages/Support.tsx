@@ -111,108 +111,186 @@ export default function Support() {
                 {/* Top gradient line */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-pink-500 to-secondary" />
 
-                <div className="flex items-center gap-4 mb-8 pb-6 border-b border-border/50">
+                {/* Profile Header */}
+                <div className="flex items-center gap-4 mb-8 pb-6 border-b border-border/50 relative">
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    transition={{ type: 'spring' as const, stiffness: 300 }}
+                    className="relative"
                   >
                     <img src={logo} alt="Profile" className="w-16 h-16 rounded-full border-2 border-primary shadow-lg shadow-primary/20" />
+                    <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center">
+                      <span className="text-[8px] text-white font-bold">✓</span>
+                    </span>
                   </motion.div>
                   <div>
-                    <h3 className="font-bold text-lg">Next Developer</h3>
+                    <h3 className="font-bold text-lg flex items-center gap-2">
+                      Next Developer
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                    </h3>
                     <p className="text-muted-foreground text-sm flex items-center gap-1">
                       Buy me a coffee <span className="text-lg">☕</span>
                     </p>
                   </div>
-                  <div className="ml-auto">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <div className="ml-auto hidden sm:block">
+                    <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 text-emerald-400 border border-emerald-500/20">
                       ✓ Verified Creator
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-6">
+                  {/* Coffee Visual Section */}
+                  <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-primary/5 via-pink-500/5 to-secondary/5 border border-border/30">
+                    <p className="text-sm text-muted-foreground mb-1">Each coffee fuels</p>
+                    <div className="flex items-center justify-center gap-6 text-xs text-foreground/80">
+                      <span className="flex flex-col items-center gap-1">
+                        <span className="text-2xl">📹</span>
+                        <span>Video Tutorials</span>
+                      </span>
+                      <span className="flex flex-col items-center gap-1">
+                        <span className="text-2xl">💻</span>
+                        <span>Open Source</span>
+                      </span>
+                      <span className="flex flex-col items-center gap-1">
+                        <span className="text-2xl">📦</span>
+                        <span>Free Resources</span>
+                      </span>
+                      <span className="flex flex-col items-center gap-1">
+                        <span className="text-2xl">🎓</span>
+                        <span>Mentorship</span>
+                      </span>
+                    </div>
+                  </div>
+
                   {/* Amount Selection */}
                   <div>
-                    <Label className="mb-3 block text-sm font-semibold">Choose Amount (₹)</Label>
+                    <Label className="mb-3 block text-sm font-semibold flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-pink-400" /> Choose Your Support
+                    </Label>
                     <div className="grid grid-cols-4 gap-3 mb-3">
-                      {presetAmounts.map((preset, i) => (
-                        <motion.div
-                          key={preset}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <button
-                            onClick={() => setAmount(preset)}
-                            className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 border-2 ${
-                              amount === preset
-                                ? 'border-primary bg-primary/15 text-primary shadow-lg shadow-primary/20'
-                                : 'border-border/50 bg-muted/30 text-muted-foreground hover:border-primary/40 hover:text-foreground'
-                            }`}
+                      {presetAmounts.map((preset) => {
+                        const coffeeCount = Math.max(1, Math.round(preset / 99));
+                        const isSelected = amount === preset;
+                        return (
+                          <motion.div
+                            key={preset}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
                           >
-                            ₹{preset}
-                          </button>
-                        </motion.div>
-                      ))}
+                            <button
+                              onClick={() => setAmount(preset)}
+                              className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 border-2 relative overflow-hidden ${
+                                isSelected
+                                  ? 'border-primary bg-primary/15 text-primary shadow-lg shadow-primary/20'
+                                  : 'border-border/50 bg-muted/30 text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                              }`}
+                            >
+                              <span className="text-base mb-0.5 block">{'☕'.repeat(Math.min(coffeeCount, 4))}</span>
+                              <span>₹{preset}</span>
+                              {isSelected && (
+                                <motion.div
+                                  layoutId="amount-glow"
+                                  className="absolute inset-0 rounded-xl bg-primary/5"
+                                  transition={{ type: 'spring' as const, stiffness: 300 }}
+                                />
+                              )}
+                            </button>
+                          </motion.div>
+                        );
+                      })}
                     </div>
-                    <Input
-                      type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(Number(e.target.value))}
-                      placeholder="Or enter custom amount"
-                      min={1}
-                      className="bg-muted/30"
-                    />
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(Number(e.target.value))}
+                        placeholder="Or enter custom amount"
+                        min={1}
+                        className="bg-muted/30 pl-8"
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                    <span className="text-xs text-muted-foreground font-medium">YOUR DETAILS</span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                   </div>
 
                   {/* Form Fields */}
                   <div className="grid md:grid-cols-2 gap-4">
+                    <motion.div className="space-y-1.5" whileFocus={{ scale: 1.01 }}>
+                      <Label className="text-sm flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-blue-400" /> Your Name *
+                      </Label>
+                      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className="bg-muted/30 focus:bg-muted/50 transition-colors" />
+                    </motion.div>
                     <div className="space-y-1.5">
-                      <Label className="text-sm">Your Name *</Label>
-                      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className="bg-muted/30" />
+                      <Label className="text-sm flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5 text-amber-400" /> Mobile Number *
+                      </Label>
+                      <Input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="10-digit mobile" className="bg-muted/30 focus:bg-muted/50 transition-colors" />
                     </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-sm">Mobile Number *</Label>
-                      <Input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="10-digit mobile" className="bg-muted/30" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label className="text-sm">Email (optional)</Label>
-                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="bg-muted/30" />
                   </div>
 
                   <div className="space-y-1.5">
                     <Label className="text-sm flex items-center gap-1.5">
-                      <MessageCircle className="w-3.5 h-3.5" /> Message (optional)
+                      <Star className="w-3.5 h-3.5 text-pink-400" /> Email (optional)
                     </Label>
-                    <Textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Say something nice... 💬" rows={3} className="bg-muted/30" />
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="bg-muted/30 focus:bg-muted/50 transition-colors" />
                   </div>
 
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/20 border border-border/30">
+                  <div className="space-y-1.5">
+                    <Label className="text-sm flex items-center gap-1.5">
+                      <MessageCircle className="w-3.5 h-3.5 text-secondary" /> Message (optional)
+                    </Label>
+                    <Textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Say something nice... 💬" rows={3} className="bg-muted/30 focus:bg-muted/50 transition-colors" />
+                  </div>
+
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10 cursor-pointer"
+                    onClick={() => setIsMonthly(!isMonthly)}
+                  >
                     <Checkbox id="monthly" checked={isMonthly} onCheckedChange={(c) => setIsMonthly(c as boolean)} />
-                    <Label htmlFor="monthly" className="cursor-pointer text-sm">
-                      Make this a monthly support <span className="text-xs text-muted-foreground">(recurring)</span>
-                    </Label>
-                  </div>
+                    <div>
+                      <Label htmlFor="monthly" className="cursor-pointer text-sm font-medium">
+                        Make this monthly
+                      </Label>
+                      <p className="text-xs text-muted-foreground">Support consistently & help me plan ahead</p>
+                    </div>
+                    <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                      Recurring
+                    </span>
+                  </motion.div>
 
+                  {/* CTA Button */}
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <GlowButton className="w-full text-base py-6" size="lg" onClick={handleSupport} disabled={processing}>
+                    <GlowButton className="w-full text-base py-6 relative overflow-hidden" size="lg" onClick={handleSupport} disabled={processing}>
                       {processing ? 'Processing...' : (
                         <span className="flex items-center gap-2">
-                          <Heart className="w-5 h-5" fill="currentColor" />
+                          <Heart className="w-5 h-5 animate-[pulse_1.5s_ease-in-out_infinite]" fill="currentColor" />
                           Support with ₹{amount}
+                          <Coffee className="w-4 h-4" />
                         </span>
                       )}
                     </GlowButton>
                   </motion.div>
 
-                  <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Secure Payment</span>
-                    <span>•</span>
-                    <span>Powered by Razorpay</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> Instant</span>
+                  {/* Trust Badges */}
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground px-3 py-1.5 rounded-full bg-muted/30 border border-border/30">
+                      <Shield className="w-3.5 h-3.5 text-emerald-400" /> Secure Payment
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground px-3 py-1.5 rounded-full bg-muted/30 border border-border/30">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" /> Instant Processing
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground px-3 py-1.5 rounded-full bg-muted/30 border border-border/30">
+                      🇮🇳 Razorpay
+                    </span>
                   </div>
                 </div>
               </GlassCard>
