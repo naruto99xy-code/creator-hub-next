@@ -457,6 +457,7 @@ export type Database = {
           created_at: string
           description: string
           download_count: number
+          file_url: string
           id: string
           image_url: string
           is_featured: boolean
