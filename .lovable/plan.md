@@ -1,33 +1,35 @@
 
 
-## Plan: File URL Redirect After Purchase (with Telegram Fallback)
+## Plan: Fix file_url redirect for materials + ensure consistent behavior
 
-### Logic
-- If product/material has a `file_url` → redirect to that URL (free: instant, paid: after payment success)
-- If product/material has NO `file_url` → redirect to Telegram (current behavior via `/success` page)
+### Problem
+The security fix removed `file_url` from the `get_public_materials` RPC, so materials always have `file_url: null` in Shop. This breaks the redirect-to-file feature for materials.
 
-### Changes
+Meanwhile, products fetch `file_url` directly from the table (bypassing `get_public_products` RPC), which works but is inconsistent.
 
-**1. `src/pages/Shop.tsx`**
-- Add `file_url` to the `Product` interface
-- Fetch `file_url` from both `products` and `materials` queries
-- Free product with `file_url`: redirect directly to `file_url` (skip success page)
-- Free product without `file_url`: redirect to `/success` page (which goes to Telegram)
-- Paid product: pass `file_url` as param to `handlePurchaseWithDetails`
+### Solution
 
-**2. `src/hooks/useRazorpay.ts`**
-- Add `fileUrl?: string` to `PurchaseOptions` interface
-- Append `&file_url=...` to the `/success` redirect URL when `fileUrl` is provided
+**1. Database migration — Add `file_url` to `get_public_materials` RPC**
+- Update the `get_public_materials` function to include `file_url` in its return columns
+- This is safe because `file_url` is just a download/redirect link, not source code (the sensitive fields are `html_code`, `css_code`, `js_code` which remain excluded)
 
-**3. `src/pages/Success.tsx`**
-- Read `file_url` from URL search params
-- If `file_url` exists: countdown redirects to `file_url` instead of Telegram
-- If `file_url` is empty/missing: countdown redirects to Telegram (current behavior, unchanged)
-- Update the manual button text accordingly ("Open File" vs "Open Telegram")
+**2. `src/pages/Shop.tsx` — Use actual `file_url` from materials**
+- Remove the `file_url: null` override on line 100
+- Map `m.file_url` from the RPC result instead
 
-### No database changes needed
-Both `products` and `materials` tables already have `file_url` columns.
+**3. No changes needed for:**
+- `src/hooks/useRazorpay.ts` — already passes `fileUrl` correctly
+- `src/pages/Success.tsx` — already handles `file_url` param with Telegram fallback
 
-### Security Note
-The `products` table query currently excludes `file_url` via `get_public_products()` function for security. We will fetch `file_url` directly since it's needed for redirection. For materials, `file_url` is already accessible.
+### Files affected
+- New migration SQL (update `get_public_materials` function)
+- `src/pages/Shop.tsx` (one line change)
+
+### Behavior after fix
+| Scenario | Result |
+|----------|--------|
+| Free + file_url filled | Instant redirect to file_url |
+| Free + file_url empty | Redirect to /success → Telegram |
+| Paid + file_url filled | Payment → /success → redirect to file_url |
+| Paid + file_url empty | Payment → /success → redirect to Telegram |
 
