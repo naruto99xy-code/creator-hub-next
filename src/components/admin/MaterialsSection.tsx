@@ -143,6 +143,15 @@ export function MaterialsSection() {
       html_intro: m.html_intro || '',
       css_intro: m.css_intro || '',
       js_intro: m.js_intro || '',
+      original_price: (m as any).original_price || 0,
+      live_site_price: (m as any).live_site_price || 0,
+      live_site_original_price: (m as any).live_site_original_price || 0,
+      live_site_file_url: (m as any).live_site_file_url || '',
+      whats_included: (m as any).whats_included?.join(', ') || '',
+      premium_features: (m as any).premium_features?.join(', ') || '',
+      live_site_features: (m as any).live_site_features?.join(', ') || '',
+      premium_note: (m as any).premium_note || '',
+      live_site_note: (m as any).live_site_note || '',
     });
     setEditingId(m.id);
     setShowForm(true);
