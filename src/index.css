@@ -350,4 +350,36 @@
   .animate-neon-pulse {
     animation: neon-pulse 3s ease-in-out infinite;
   }
+
+  /* Rotating border beam animation */
+  @keyframes border-beam {
+    0% { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+  }
+
+  .border-beam {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    filter: blur(12px);
+    offset-path: rect(0 100% 100% 0 round 16px);
+    animation: border-beam 4s linear infinite;
+  }
+
+  .border-beam-red::before {
+    background: radial-gradient(circle, rgba(239,68,68,0.7) 0%, transparent 70%);
+  }
+
+  .border-beam-emerald::before {
+    background: radial-gradient(circle, rgba(52,211,153,0.7) 0%, transparent 70%);
+  }
 }
