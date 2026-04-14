@@ -107,9 +107,6 @@ export default function Support() {
           {/* Main Support Card */}
           <motion.div {...fadeUp(0.3)} className="max-w-2xl mx-auto">
             <div className="relative">
-              {/* Card border beam */}
-              <div className="border-beam border-beam-red" />
-
               <GlassCard className="relative overflow-hidden">
                 {/* Top gradient line */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-pink-500 to-secondary" />
