@@ -101,7 +101,9 @@ export default function Shop() {
       description: m.description || '',
       price: m.price || 0,
       image_url: m.image_url,
-      category: m.category,
+      category: ['Template', 'Portfolio'].includes(m.content_type) 
+        ? (m.content_type === 'Template' ? 'Templates' : 'Portfolio')
+        : m.category,
       download_count: m.download_count || 0,
       file_url: m.file_url || null,
       source: 'material' as const,
