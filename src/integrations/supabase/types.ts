@@ -63,6 +63,14 @@ export type Database = {
           is_premium: boolean
           js_code: string | null
           js_intro: string | null
+          live_site_features: string[] | null
+          live_site_file_url: string | null
+          live_site_note: string | null
+          live_site_original_price: number
+          live_site_price: number
+          original_price: number
+          premium_features: string[] | null
+          premium_note: string | null
           price: number
           publish_sections: string[]
           rating: number
@@ -71,6 +79,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string | null
+          whats_included: string[] | null
           youtube_url: string | null
         }
         Insert: {
@@ -91,6 +100,14 @@ export type Database = {
           is_premium?: boolean
           js_code?: string | null
           js_intro?: string | null
+          live_site_features?: string[] | null
+          live_site_file_url?: string | null
+          live_site_note?: string | null
+          live_site_original_price?: number
+          live_site_price?: number
+          original_price?: number
+          premium_features?: string[] | null
+          premium_note?: string | null
           price?: number
           publish_sections?: string[]
           rating?: number
@@ -99,6 +116,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id?: string | null
+          whats_included?: string[] | null
           youtube_url?: string | null
         }
         Update: {
@@ -119,6 +137,14 @@ export type Database = {
           is_premium?: boolean
           js_code?: string | null
           js_intro?: string | null
+          live_site_features?: string[] | null
+          live_site_file_url?: string | null
+          live_site_note?: string | null
+          live_site_original_price?: number
+          live_site_price?: number
+          original_price?: number
+          premium_features?: string[] | null
+          premium_note?: string | null
           price?: number
           publish_sections?: string[]
           rating?: number
@@ -127,6 +153,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
+          whats_included?: string[] | null
           youtube_url?: string | null
         }
         Relationships: []
@@ -462,11 +489,20 @@ export type Database = {
           image_url: string
           is_featured: boolean
           is_premium: boolean
+          live_site_features: string[]
+          live_site_file_url: string
+          live_site_note: string
+          live_site_original_price: number
+          live_site_price: number
+          original_price: number
+          premium_features: string[]
+          premium_note: string
           price: number
           publish_sections: string[]
           rating: number
           tags: string[]
           title: string
+          whats_included: string[]
           youtube_url: string
         }[]
       }

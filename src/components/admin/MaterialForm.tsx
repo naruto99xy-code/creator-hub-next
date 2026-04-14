@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { Upload, X, Image, Code, Info, Eye } from 'lucide-react';
+import { Upload, X, Image, Code, Info, Eye, LayoutGrid } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export interface MaterialFormData {
@@ -28,6 +28,15 @@ export interface MaterialFormData {
   html_intro: string;
   css_intro: string;
   js_intro: string;
+  original_price: number;
+  live_site_price: number;
+  live_site_original_price: number;
+  live_site_file_url: string;
+  whats_included: string;
+  premium_features: string;
+  live_site_features: string;
+  premium_note: string;
+  live_site_note: string;
 }
 
 export const emptyFormData: MaterialFormData = {
@@ -36,6 +45,9 @@ export const emptyFormData: MaterialFormData = {
   is_premium: false, is_featured: false, price: 0, publish_sections: [],
   html_code: '', css_code: '', js_code: '',
   html_intro: '', css_intro: '', js_intro: '',
+  original_price: 0, live_site_price: 0, live_site_original_price: 0,
+  live_site_file_url: '', whats_included: '', premium_features: '',
+  live_site_features: '', premium_note: '', live_site_note: '',
 };
 
 const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership'];
@@ -81,12 +93,15 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
   return (
     <div className="space-y-4">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="w-full grid grid-cols-4 bg-muted/50">
+        <TabsList className="w-full grid grid-cols-5 bg-muted/50">
           <TabsTrigger value="basic" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Image className="w-3.5 h-3.5" /> Basic
           </TabsTrigger>
           <TabsTrigger value="code" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Code className="w-3.5 h-3.5" /> Code
+          </TabsTrigger>
+          <TabsTrigger value="detail" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+            <LayoutGrid className="w-3.5 h-3.5" /> Detail
           </TabsTrigger>
           <TabsTrigger value="info" className="flex items-center gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Info className="w-3.5 h-3.5" /> Info
@@ -257,6 +272,59 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
               />
             </div>
           ))}
+        </TabsContent>
+
+        {/* TAB: DETAIL PAGE */}
+        <TabsContent value="detail" className="space-y-4 mt-4">
+          <p className="text-sm text-muted-foreground">Configure the product detail page for Templates & Portfolio items.</p>
+          
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Original Price (strikethrough)</Label>
+              <Input type="number" min={0} placeholder="e.g. 200" value={form.original_price || ''} onChange={(e) => set('original_price', Number(e.target.value) || 0)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site Price</Label>
+              <Input type="number" min={0} placeholder="e.g. 265" value={form.live_site_price || ''} onChange={(e) => set('live_site_price', Number(e.target.value) || 0)} />
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Live Site Original Price (strikethrough)</Label>
+              <Input type="number" min={0} placeholder="e.g. 379" value={form.live_site_original_price || ''} onChange={(e) => set('live_site_original_price', Number(e.target.value) || 0)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site File URL</Label>
+              <Input placeholder="https://..." value={form.live_site_file_url} onChange={(e) => set('live_site_file_url', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>What's Included (comma separated)</Label>
+            <Input placeholder="Responsive design, Modern UI, Clean code" value={form.whats_included} onChange={(e) => set('whats_included', e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Premium Code Features (comma separated)</Label>
+            <Input placeholder="Complete source code, Easily editable, Setup instructions" value={form.premium_features} onChange={(e) => set('premium_features', e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Live Site Features (comma separated)</Label>
+            <Input placeholder="Fully deployed website, Personalized content, Live link & QR" value={form.live_site_features} onChange={(e) => set('live_site_features', e.target.value)} />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Premium Code Note</Label>
+              <Input placeholder="Requires laptop & basic HTML/CSS/JS knowledge" value={form.premium_note} onChange={(e) => set('premium_note', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site Note</Label>
+              <Input placeholder="Get your ready-made website within 24 hours" value={form.live_site_note} onChange={(e) => set('live_site_note', e.target.value)} />
+            </div>
+          </div>
         </TabsContent>
 
         {/* TAB 3: INFO */}
