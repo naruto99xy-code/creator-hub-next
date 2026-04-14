@@ -105,13 +105,13 @@ export default function Dashboard() {
       const path = `${user.id}/avatar.${ext}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('material-thumbnails')
+        .from('avatars')
         .upload(path, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       const { data: urlData } = supabase.storage
-        .from('material-thumbnails')
+        .from('avatars')
         .getPublicUrl(path);
 
       const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
