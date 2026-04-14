@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { getSafeErrorMessage } from '@/lib/safeError';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
+import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Sparkles, Zap, Shield } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Sparkles, Zap, Shield, KeyRound } from 'lucide-react';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import authIllustration from '@/assets/auth-illustration.png';
@@ -31,6 +32,7 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -67,6 +69,27 @@ export default function Auth() {
         toast({ title: 'Welcome back!' });
       }
       navigate('/dashboard');
+    } catch (error: unknown) {
+      toast({ title: 'Error', description: getSafeErrorMessage(error), variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !z.string().email().safeParse(email).success) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({ title: 'Check your email', description: 'We sent you a password reset link.' });
+      setIsForgotPassword(false);
     } catch (error: unknown) {
       toast({ title: 'Error', description: getSafeErrorMessage(error), variant: 'destructive' });
     } finally {
