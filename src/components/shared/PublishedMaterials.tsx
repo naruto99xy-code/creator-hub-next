@@ -30,9 +30,7 @@ export function PublishedMaterials({ section, title, subtitle }: PublishedMateri
   useEffect(() => {
     const fetch = async () => {
       const { data } = await supabase
-        .from('materials')
-        .select('id, title, description, category, image_url, download_count, rating, is_premium, price, content_type')
-        .contains('publish_sections', [section]);
+        .rpc('get_public_materials', { p_section: section });
       setMaterials((data as Material[]) || []);
       setLoading(false);
     };
