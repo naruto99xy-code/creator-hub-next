@@ -238,7 +238,37 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
               />
               <Label>Premium</Label>
             </div>
-            {form.is_premium && (
+            {form.is_premium && ['Template', 'Portfolio'].includes(form.content_type) && (
+              <div className="w-full animate-in fade-in slide-in-from-left-2 duration-200 mt-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Premium Code Price (₹)</Label>
+                    <Input type="number" min={1} placeholder="e.g. 179" value={form.price || ''} onChange={(e) => set('price', Number(e.target.value) || 0)} className="h-8 text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Original Price (₹)</Label>
+                    <Input type="number" min={0} placeholder="e.g. 200" value={form.original_price || ''} onChange={(e) => set('original_price', Number(e.target.value) || 0)} className="h-8 text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Live Site Price (₹)</Label>
+                    <Input type="number" min={0} placeholder="e.g. 265" value={form.live_site_price || ''} onChange={(e) => set('live_site_price', Number(e.target.value) || 0)} className="h-8 text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">Live Site Original Price (₹)</Label>
+                    <Input type="number" min={0} placeholder="e.g. 379" value={form.live_site_original_price || ''} onChange={(e) => set('live_site_original_price', Number(e.target.value) || 0)} className="h-8 text-sm" />
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-2 text-xs">
+                  {form.original_price > form.price && form.price > 0 && (
+                    <span className="text-green-500 font-medium">Premium Code Savings: ₹{form.original_price - form.price}</span>
+                  )}
+                  {form.live_site_original_price > form.live_site_price && form.live_site_price > 0 && (
+                    <span className="text-green-500 font-medium">Live Site Savings: ₹{form.live_site_original_price - form.live_site_price}</span>
+                  )}
+                </div>
+              </div>
+            )}
+            {form.is_premium && !['Template', 'Portfolio'].includes(form.content_type) && (
               <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200">
                 <Label className="text-xs text-muted-foreground">Price</Label>
                 <Input
