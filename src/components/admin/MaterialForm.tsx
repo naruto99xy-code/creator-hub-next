@@ -20,6 +20,8 @@ export interface MaterialFormData {
   software_compatibility: string;
   is_premium: boolean;
   is_featured: boolean;
+  price: number;
+  publish_sections: string[];
   html_code: string;
   css_code: string;
   js_code: string;
@@ -31,10 +33,12 @@ export interface MaterialFormData {
 export const emptyFormData: MaterialFormData = {
   title: '', content_type: '', description: '', category: '', author: '',
   file_url: '', youtube_url: '', tags: '', software_compatibility: '',
-  is_premium: false, is_featured: false,
+  is_premium: false, is_featured: false, price: 0, publish_sections: [],
   html_code: '', css_code: '', js_code: '',
   html_intro: '', css_intro: '', js_intro: '',
 };
+
+const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership'];
 
 const CATEGORIES = ['Templates', 'Code Snippets', 'Tutorials', 'UI Kits', 'Effects', 'Animations', 'Other'];
 const CONTENT_TYPES = ['HTML/CSS', 'JavaScript', 'React Component', 'Animation', 'Template', 'Full Project', 'Other'];
@@ -180,11 +184,58 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          {/* Publish Sections */}
+          <div className="space-y-2">
+            <Label>Publish Sections</Label>
+            <div className="flex flex-wrap gap-2">
+              {PUBLISH_SECTIONS.map((section) => {
+                const selected = form.publish_sections.includes(section);
+                return (
+                  <button
+                    key={section}
+                    type="button"
+                    onClick={() => {
+                      const updated = selected
+                        ? form.publish_sections.filter((s) => s !== section)
+                        : [...form.publish_sections, section];
+                      onChange({ ...form, publish_sections: updated });
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      selected
+                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                        : 'bg-muted/50 text-muted-foreground border-border hover:border-primary/50 hover:text-foreground'
+                    }`}
+                  >
+                    {section}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-2">
-              <Switch checked={form.is_premium} onCheckedChange={(v) => set('is_premium', v)} />
+              <Switch
+                checked={form.is_premium}
+                onCheckedChange={(v) => {
+                  onChange({ ...form, is_premium: v, price: v ? form.price : 0 });
+                }}
+              />
               <Label>Premium</Label>
             </div>
+            {form.is_premium && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200">
+                <Label className="text-xs text-muted-foreground">Price</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  placeholder="Enter price"
+                  value={form.price || ''}
+                  onChange={(e) => set('price', Number(e.target.value) || 0)}
+                  className="w-28 h-8 text-sm"
+                />
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Switch checked={form.is_featured} onCheckedChange={(v) => set('is_featured', v)} />
               <Label>Featured</Label>
