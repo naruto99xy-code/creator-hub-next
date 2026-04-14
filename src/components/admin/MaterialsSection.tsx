@@ -64,6 +64,10 @@ export function MaterialsSection() {
       toast({ title: 'Title and Content Type are required', variant: 'destructive' });
       return;
     }
+    if (form.is_premium && (!form.price || form.price <= 0)) {
+      toast({ title: 'Price is required for premium materials and must be > 0', variant: 'destructive' });
+      return;
+    }
 
     setUploading(true);
     try {
