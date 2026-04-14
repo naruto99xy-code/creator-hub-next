@@ -205,7 +205,14 @@ export default function Shop() {
                   className="group relative"
                 >
                   {/* Card border glow on hover */}
-                  <div className={`h-full rounded-2xl border ${getCategoryBorder(product.category)} bg-gradient-to-b ${getCategoryGradient(product.category)} backdrop-blur-xl p-5 transition-all duration-500 overflow-hidden relative`}>
+                  <div
+                    className={`h-full rounded-2xl border ${getCategoryBorder(product.category)} bg-gradient-to-b ${getCategoryGradient(product.category)} backdrop-blur-xl p-5 transition-all duration-500 overflow-hidden relative cursor-pointer`}
+                    onClick={() => {
+                      if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
+                        navigate(`/shop/${product.id}`);
+                      }
+                    }}
+                  >
                     {/* Background orb */}
                     <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-2xl"
                       style={{ background: getCategoryColor(product.category) }}
