@@ -399,7 +399,7 @@ export type Database = {
           message: string | null
           name: string
           payment_status: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           amount: number
@@ -410,7 +410,7 @@ export type Database = {
           message?: string | null
           name: string
           payment_status?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           amount?: number
@@ -421,7 +421,7 @@ export type Database = {
           message?: string | null
           name?: string
           payment_status?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
