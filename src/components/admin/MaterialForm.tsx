@@ -28,6 +28,15 @@ export interface MaterialFormData {
   html_intro: string;
   css_intro: string;
   js_intro: string;
+  original_price: number;
+  live_site_price: number;
+  live_site_original_price: number;
+  live_site_file_url: string;
+  whats_included: string;
+  premium_features: string;
+  live_site_features: string;
+  premium_note: string;
+  live_site_note: string;
 }
 
 export const emptyFormData: MaterialFormData = {
@@ -36,6 +45,9 @@ export const emptyFormData: MaterialFormData = {
   is_premium: false, is_featured: false, price: 0, publish_sections: [],
   html_code: '', css_code: '', js_code: '',
   html_intro: '', css_intro: '', js_intro: '',
+  original_price: 0, live_site_price: 0, live_site_original_price: 0,
+  live_site_file_url: '', whats_included: '', premium_features: '',
+  live_site_features: '', premium_note: '', live_site_note: '',
 };
 
 const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership'];
