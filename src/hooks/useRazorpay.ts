@@ -16,6 +16,7 @@ interface PurchaseOptions {
   userName: string;
   userMobile: string;
   themeColor?: string;
+  fileUrl?: string;
 }
 
 export function useRazorpay() {
@@ -34,7 +35,7 @@ export function useRazorpay() {
     return headers;
   };
 
-  const handlePurchaseWithDetails = async ({ productName, price, userName, userMobile, themeColor }: PurchaseOptions) => {
+  const handlePurchaseWithDetails = async ({ productName, price, userName, userMobile, themeColor, fileUrl }: PurchaseOptions) => {
     if (processing) return;
     setProcessing(true);
 
@@ -95,7 +96,8 @@ export function useRazorpay() {
             }
 
             toast.success('Payment Successful 🎉');
-            window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&amount=${price}&name=${encodeURIComponent(userName)}&mobile=${encodeURIComponent(userMobile)}`;
+            const fileParam = fileUrl ? `&file_url=${encodeURIComponent(fileUrl)}` : '';
+            window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&amount=${price}&name=${encodeURIComponent(userName)}&mobile=${encodeURIComponent(userMobile)}${fileParam}`;
           } catch {
             toast.error('Verification error. Contact support.');
             setProcessing(false);

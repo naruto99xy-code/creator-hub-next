@@ -17,6 +17,7 @@ interface Product {
   image_url: string | null;
   category: string | null;
   download_count: number;
+  file_url?: string | null;
   source?: 'product' | 'material';
 }
 
@@ -81,12 +82,12 @@ export default function Shop() {
   const fetchProducts = async () => {
     const { data: productsData } = await supabase
       .from('products')
-      .select('id, title, description, price, image_url, category, download_count')
+      .select('id, title, description, price, image_url, category, download_count, file_url')
       .eq('is_active', true);
 
     const { data: materialsData } = await supabase
       .from('materials')
-      .select('id, title, description, price, image_url, category, download_count, publish_sections')
+      .select('id, title, description, price, image_url, category, download_count, publish_sections, file_url')
       .contains('publish_sections', ['Shop']);
 
     const productItems: Product[] = (productsData || []).map(p => ({ ...p, source: 'product' as const }));
@@ -98,6 +99,7 @@ export default function Shop() {
       image_url: m.image_url,
       category: m.category,
       download_count: m.download_count || 0,
+      file_url: m.file_url,
       source: 'material' as const,
     }));
 
@@ -110,9 +112,13 @@ export default function Shop() {
 
   const handleConfirmPurchase = (name: string, mobile: string) => {
     if (!selectedProduct) return;
+    const fileUrl = selectedProduct.file_url;
     if (selectedProduct.price === 0) {
-      // Free product — skip payment, go to success directly
-      window.location.href = `/success?product=${encodeURIComponent(selectedProduct.title)}&amount=0&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}`;
+      if (fileUrl) {
+        window.location.href = fileUrl;
+      } else {
+        window.location.href = `/success?product=${encodeURIComponent(selectedProduct.title)}&amount=0&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}`;
+      }
       setSelectedProduct(null);
       return;
     }
@@ -121,6 +127,7 @@ export default function Shop() {
       price: selectedProduct.price,
       userName: name,
       userMobile: mobile,
+      fileUrl: fileUrl || undefined,
     });
     setSelectedProduct(null);
   };
