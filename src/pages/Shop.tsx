@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -78,6 +79,7 @@ export default function Shop() {
   const [activeCategory, setActiveCategory] = useState('all');
   const { handlePurchaseWithDetails, processing } = useRazorpay();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -271,7 +273,13 @@ export default function Shop() {
                     <GlowButton
                       className="w-full font-semibold"
                       disabled={processing}
-                      onClick={() => setSelectedProduct(product)}
+                      onClick={() => {
+                        if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
+                          navigate(`/shop/${product.id}`);
+                        } else {
+                          setSelectedProduct(product);
+                        }
+                      }}
                     >
                       {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
                       {product.price === 0 ? '🎁 Get Free' : '🛒 Buy Now'}

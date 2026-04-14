@@ -27,6 +27,7 @@ import Docs from "./pages/Docs";
 import Services from "./pages/Services";
 import Success from "./pages/Success";
 import PaymentFailed from "./pages/PaymentFailed";
+import ProductDetail from "./pages/ProductDetail";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -52,6 +53,7 @@ const App = () => {
               <Route path="/membership" element={<Membership />} />
               <Route path="/ai" element={<AI />} />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:id" element={<ProductDetail />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/privacy" element={<Privacy />} />
