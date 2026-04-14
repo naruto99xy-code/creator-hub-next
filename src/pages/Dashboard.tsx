@@ -218,15 +218,6 @@ export default function Dashboard() {
                       <Camera className="w-4 h-4" />
                     )}
                   </button>
-                  {profile?.avatar_url && (
-                    <button
-                      onClick={handleAvatarRemove}
-                      disabled={uploading}
-                      className="absolute top-0 right-0 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  )}
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -286,6 +277,15 @@ export default function Dashboard() {
                     <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
                       <Sparkles className="w-3 h-3" /> Free Plan
                     </span>
+                    {profile?.avatar_url && (
+                      <button
+                        onClick={handleAvatarRemove}
+                        disabled={uploading}
+                        className="px-2.5 py-1 rounded-full text-xs font-semibold bg-destructive/10 text-destructive border border-destructive/20 flex items-center gap-1 hover:bg-destructive/20 transition-colors"
+                      >
+                        <X className="w-3 h-3" /> Remove Photo
+                      </button>
+                    )}
                   </div>
                 </div>
 
