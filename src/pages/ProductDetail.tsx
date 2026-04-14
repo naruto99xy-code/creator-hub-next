@@ -229,7 +229,7 @@ export default function ProductDetail() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Premium Code Card */}
                 <div className="group rounded-2xl border-2 border-red-500/30 bg-gradient-to-b from-red-500/10 via-primary/5 to-transparent p-5 space-y-4 relative overflow-hidden transition-all duration-500 hover:border-red-500/60 hover:shadow-[0_0_30px_-5px] hover:shadow-red-500/20 hover:scale-[1.02]">
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-500 to-transparent animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]" />
+                  <div className="border-beam border-beam-red" />
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-red-500/5 rounded-full blur-3xl group-hover:bg-red-500/10 transition-all duration-700" />
                   <div className="flex items-center gap-2">
                     <span className="text-red-400 font-mono text-lg group-hover:animate-[pulse_1.5s_ease-in-out_infinite]">&lt;/&gt;</span>
@@ -279,7 +279,7 @@ export default function ProductDetail() {
                 {/* Live Site Card */}
                 {(material.live_site_price > 0 || material.live_site_file_url) && (
                   <div className="group rounded-2xl border-2 border-emerald-500/30 bg-gradient-to-b from-emerald-500/10 via-emerald-500/5 to-transparent p-5 space-y-4 relative overflow-hidden transition-all duration-500 hover:border-emerald-500/60 hover:shadow-[0_0_30px_-5px] hover:shadow-emerald-500/20 hover:scale-[1.02]">
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]" />
+                    <div className="border-beam border-beam-emerald" />
                     <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all duration-700" />
                     <div className="flex items-center gap-2">
                       <Globe className="w-5 h-5 text-emerald-400 group-hover:animate-[pulse_1.5s_ease-in-out_infinite]" />
