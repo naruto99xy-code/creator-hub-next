@@ -448,6 +448,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_materials: {
+        Args: { p_section?: string }
+        Returns: {
+          author: string
+          category: string
+          content_type: string
+          created_at: string
+          description: string
+          download_count: number
+          id: string
+          image_url: string
+          is_featured: boolean
+          is_premium: boolean
+          price: number
+          publish_sections: string[]
+          rating: number
+          tags: string[]
+          title: string
+          youtube_url: string
+        }[]
+      }
       get_public_products: {
         Args: never
         Returns: {
