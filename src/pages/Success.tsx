@@ -149,6 +149,7 @@ export default function Success() {
   const orderId = searchParams.get('order_id') || '';
   const userName = searchParams.get('name') || '';
   const userMobile = searchParams.get('mobile') || '';
+  const fileUrl = searchParams.get('file_url') || '';
   const [countdown, setCountdown] = useState(REDIRECT_SECONDS);
 
   /* Parallax on desktop */
@@ -184,19 +185,22 @@ export default function Success() {
     return `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(message)}`;
   }, [product, userName, userMobile, paymentId, orderId, amount, now]);
 
+  const finalRedirectUrl = fileUrl || telegramUrl;
+  const hasFileUrl = !!fileUrl;
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = telegramUrl;
-          return 0;
-        }
+          if (prev <= 1) {
+            clearInterval(timer);
+            window.location.href = finalRedirectUrl;
+            return 0;
+          }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [telegramUrl]);
+  }, [finalRedirectUrl]);
 
   const details = [
     { label: 'Product', value: product, icon: '📦' },
@@ -283,7 +287,7 @@ export default function Success() {
             transition={{ delay: 0.55, duration: 0.5 }}
             className="text-muted-foreground mb-8 text-sm md:text-base"
           >
-            Your purchase has been confirmed. Redirecting to Telegram…
+            Your purchase has been confirmed. {hasFileUrl ? 'Redirecting to your file…' : 'Redirecting to Telegram…'}
           </motion.p>
 
           {/* Glass card */}
@@ -350,7 +354,7 @@ export default function Success() {
 
             {/* Manual button */}
             <motion.a
-              href={telegramUrl}
+              href={finalRedirectUrl}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, boxShadow: '0 0 30px hsl(160 80% 50% / 0.3)' }}
@@ -363,7 +367,7 @@ export default function Success() {
               }}
             >
               <ExternalLink className="w-4 h-4" />
-              Open Telegram Now
+              {hasFileUrl ? 'Open File Now' : 'Open Telegram Now'}
             </motion.a>
           </motion.div>
         </div>
