@@ -1,35 +1,59 @@
 
 
-## Plan: Fix file_url redirect for materials + ensure consistent behavior
+## Plan: Product Detail Page for Templates & Portfolio
 
-### Problem
-The security fix removed `file_url` from the `get_public_materials` RPC, so materials always have `file_url: null` in Shop. This breaks the redirect-to-file feature for materials.
+### Overview
+When users click a Template or Portfolio product in the Shop, instead of the payment modal, they'll navigate to a detailed product page (like the reference image) with: product image/video preview, description, "What's Included" list, and two pricing tiers ("Premium Code" & "Live Site").
 
-Meanwhile, products fetch `file_url` directly from the table (bypassing `get_public_products` RPC), which works but is inconsistent.
+### Database Changes (Migration)
 
-### Solution
+Add new columns to `materials` table:
+- `original_price` (numeric, default 0) — strikethrough price for Premium Code
+- `live_site_price` (numeric, default 0) — Live Site option price
+- `live_site_original_price` (numeric, default 0) — strikethrough price for Live Site
+- `live_site_file_url` (text, nullable) — redirect URL after Live Site purchase
+- `whats_included` (text[], nullable) — checklist items shown on detail page
+- `premium_features` (text[], nullable) — Premium Code features list
+- `live_site_features` (text[], nullable) — Live Site features list
+- `premium_note` (text, nullable) — yellow note under Premium Code price
+- `live_site_note` (text, nullable) — yellow note under Live Site price
 
-**1. Database migration — Add `file_url` to `get_public_materials` RPC**
-- Update the `get_public_materials` function to include `file_url` in its return columns
-- This is safe because `file_url` is just a download/redirect link, not source code (the sensitive fields are `html_code`, `css_code`, `js_code` which remain excluded)
+Update `get_public_materials` RPC to include these new fields.
 
-**2. `src/pages/Shop.tsx` — Use actual `file_url` from materials**
-- Remove the `file_url: null` override on line 100
-- Map `m.file_url` from the RPC result instead
+### New Files
 
-**3. No changes needed for:**
-- `src/hooks/useRazorpay.ts` — already passes `fileUrl` correctly
-- `src/pages/Success.tsx` — already handles `file_url` param with Telegram fallback
+**`src/pages/ProductDetail.tsx`** — The detail page:
+- Fetches material by ID from `get_public_materials` RPC (or direct admin query)
+- Left side: product image with YouTube video autoplay on hover (using `youtube_url` field), "Live Demo" button
+- Right side: category badge, title, description, "What's Included" checklist, two pricing cards
+- Each pricing card: price with strikethrough original, "Limited Offer" badge, savings calculation, note text, feature checklist, "Order" button
+- Order buttons open the existing `PaymentModal` with appropriate price/fileUrl
+- Back to Products link at top
 
-### Files affected
-- New migration SQL (update `get_public_materials` function)
-- `src/pages/Shop.tsx` (one line change)
+### Modified Files
 
-### Behavior after fix
-| Scenario | Result |
-|----------|--------|
-| Free + file_url filled | Instant redirect to file_url |
-| Free + file_url empty | Redirect to /success → Telegram |
-| Paid + file_url filled | Payment → /success → redirect to file_url |
-| Paid + file_url empty | Payment → /success → redirect to Telegram |
+**`src/App.tsx`**
+- Add route: `/shop/:id` → `ProductDetail`
+
+**`src/pages/Shop.tsx`**
+- For Templates & Portfolio categories: clicking a product card navigates to `/shop/${product.id}` instead of opening PaymentModal
+- Other categories keep current behavior (direct PaymentModal)
+
+**`src/components/admin/MaterialForm.tsx`**
+- Add new "Detail Page" tab with fields for: original_price, live_site_price, live_site_original_price, live_site_file_url, whats_included, premium_features, live_site_features, premium_note, live_site_note
+- Text arrays entered as comma-separated values
+
+**`src/components/admin/MaterialsSection.tsx`**
+- Pass new fields when saving materials
+
+### Video Hover Behavior
+- Product image shown by default
+- On mouse hover over the image area: embed YouTube iframe with autoplay
+- On mouse leave: hide iframe, show image again
+- "Live Demo" button below image also triggers video play
+
+### Payment Flow (unchanged logic)
+- "Order Premium Code" → opens PaymentModal with `price` and `file_url`
+- "Order Live Site" → opens PaymentModal with `live_site_price` and `live_site_file_url`
+- After payment, existing Success page handles redirect
 
