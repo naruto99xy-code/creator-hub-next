@@ -1,25 +1,33 @@
 
 
-## Plan: Remove Products Section from Admin Panel
+## Plan: File URL Redirect After Purchase (with Telegram Fallback)
 
-### Overview
-Admin panel se Products wala section (Add product form + product list) remove karenge. Sirf Materials section rahega. Stats cards me Products count bhi hata denge.
+### Logic
+- If product/material has a `file_url` → redirect to that URL (free: instant, paid: after payment success)
+- If product/material has NO `file_url` → redirect to Telegram (current behavior via `/success` page)
 
 ### Changes
 
-**`src/pages/Admin.tsx`**:
-- Remove the Products `GlassCard` (add form + product list) from the left side of the grid
-- Remove `products` state, `newProduct` state, `imageFile`, `pricingType`, `imageInputRef`, `showAddProduct` states
-- Remove `addProduct`, `deleteProduct` functions and product-related fetch from `fetchData`
-- Remove the Products stat card from the stats grid
-- Make Supporters card full-width or adjust grid layout
-- Keep all imports that are still needed, remove unused ones (Package, Plus, Trash2, Upload, Image, Link, RadioGroup, etc.)
+**1. `src/pages/Shop.tsx`**
+- Add `file_url` to the `Product` interface
+- Fetch `file_url` from both `products` and `materials` queries
+- Free product with `file_url`: redirect directly to `file_url` (skip success page)
+- Free product without `file_url`: redirect to `/success` page (which goes to Telegram)
+- Paid product: pass `file_url` as param to `handlePurchaseWithDetails`
 
-**No database changes** — products table stays as-is, just not managed from this panel anymore.
+**2. `src/hooks/useRazorpay.ts`**
+- Add `fileUrl?: string` to `PurchaseOptions` interface
+- Append `&file_url=...` to the `/success` redirect URL when `fileUrl` is provided
 
-### What stays unchanged
-- Materials section (form, search, filter, cards) — untouched
-- Supporters section — stays, just repositioned
-- Stats: Supporters, Members, Revenue stay; Products stat removed
-- All other pages unaffected
+**3. `src/pages/Success.tsx`**
+- Read `file_url` from URL search params
+- If `file_url` exists: countdown redirects to `file_url` instead of Telegram
+- If `file_url` is empty/missing: countdown redirects to Telegram (current behavior, unchanged)
+- Update the manual button text accordingly ("Open File" vs "Open Telegram")
+
+### No database changes needed
+Both `products` and `materials` tables already have `file_url` columns.
+
+### Security Note
+The `products` table query currently excludes `file_url` via `get_public_products()` function for security. We will fetch `file_url` directly since it's needed for redirection. For materials, `file_url` is already accessible.
 
