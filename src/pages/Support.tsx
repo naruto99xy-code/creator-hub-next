@@ -25,10 +25,10 @@ const fadeUp = (delay = 0) => ({
 });
 
 const impactStats = [
-  { icon: Users, label: 'Developers Helped', value: '2,000+', color: 'text-blue-400' },
-  { icon: Zap, label: 'Projects Created', value: '150+', color: 'text-amber-400' },
-  { icon: Star, label: 'Resources Shared', value: '500+', color: 'text-pink-400' },
-  { icon: Shield, label: 'Hours of Content', value: '1,200+', color: 'text-emerald-400' },
+  { icon: Users, label: 'Developers Helped', value: '50+', color: 'text-blue-400' },
+  { icon: Zap, label: 'Projects Created', value: '10+', color: 'text-amber-400' },
+  { icon: Star, label: 'Resources Shared', value: '25+', color: 'text-pink-400' },
+  { icon: Shield, label: 'Hours of Content', value: '100+', color: 'text-emerald-400' },
 ];
 
 export default function Support() {
