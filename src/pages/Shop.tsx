@@ -110,6 +110,12 @@ export default function Shop() {
 
   const handleConfirmPurchase = (name: string, mobile: string) => {
     if (!selectedProduct) return;
+    if (selectedProduct.price === 0) {
+      // Free product — skip payment, go to success directly
+      window.location.href = `/success?product=${encodeURIComponent(selectedProduct.title)}&amount=0&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}`;
+      setSelectedProduct(null);
+      return;
+    }
     handlePurchaseWithDetails({
       productName: selectedProduct.title,
       price: selectedProduct.price,
