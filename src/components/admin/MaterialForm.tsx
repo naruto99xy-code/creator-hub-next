@@ -72,7 +72,7 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
     if (file?.type.startsWith('image/')) handleImageSelect(file);
   }, [handleImageSelect]);
 
-  const set = (key: keyof MaterialFormData, value: string | boolean) =>
+  const set = (key: keyof MaterialFormData, value: string | boolean | number) =>
     onChange({ ...form, [key]: value });
 
   const previewContent = `<!DOCTYPE html><html><head><style>${form.css_code || ''}</style></head><body>${form.html_code || ''}<script>${form.js_code || ''}<\/script></body></html>`;
