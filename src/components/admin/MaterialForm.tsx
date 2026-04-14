@@ -262,6 +262,59 @@ export function MaterialForm({ form, onChange, onSubmit, uploading, isEditing, o
           ))}
         </TabsContent>
 
+        {/* TAB: DETAIL PAGE */}
+        <TabsContent value="detail" className="space-y-4 mt-4">
+          <p className="text-sm text-muted-foreground">Configure the product detail page for Templates & Portfolio items.</p>
+          
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Original Price (strikethrough)</Label>
+              <Input type="number" min={0} placeholder="e.g. 200" value={form.original_price || ''} onChange={(e) => set('original_price', Number(e.target.value) || 0)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site Price</Label>
+              <Input type="number" min={0} placeholder="e.g. 265" value={form.live_site_price || ''} onChange={(e) => set('live_site_price', Number(e.target.value) || 0)} />
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Live Site Original Price (strikethrough)</Label>
+              <Input type="number" min={0} placeholder="e.g. 379" value={form.live_site_original_price || ''} onChange={(e) => set('live_site_original_price', Number(e.target.value) || 0)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site File URL</Label>
+              <Input placeholder="https://..." value={form.live_site_file_url} onChange={(e) => set('live_site_file_url', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>What's Included (comma separated)</Label>
+            <Input placeholder="Responsive design, Modern UI, Clean code" value={form.whats_included} onChange={(e) => set('whats_included', e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Premium Code Features (comma separated)</Label>
+            <Input placeholder="Complete source code, Easily editable, Setup instructions" value={form.premium_features} onChange={(e) => set('premium_features', e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Live Site Features (comma separated)</Label>
+            <Input placeholder="Fully deployed website, Personalized content, Live link & QR" value={form.live_site_features} onChange={(e) => set('live_site_features', e.target.value)} />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Premium Code Note</Label>
+              <Input placeholder="Requires laptop & basic HTML/CSS/JS knowledge" value={form.premium_note} onChange={(e) => set('premium_note', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Live Site Note</Label>
+              <Input placeholder="Get your ready-made website within 24 hours" value={form.live_site_note} onChange={(e) => set('live_site_note', e.target.value)} />
+            </div>
+          </div>
+        </TabsContent>
+
         {/* TAB 3: INFO */}
         <TabsContent value="info" className="space-y-4 mt-4">
           {(['html_intro', 'css_intro', 'js_intro'] as const).map((field) => (
