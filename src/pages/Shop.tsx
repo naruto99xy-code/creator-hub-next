@@ -282,7 +282,8 @@ export default function Shop() {
                     <GlowButton
                       className="w-full font-semibold"
                       disabled={processing}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
                           navigate(`/shop/${product.id}`);
                         } else {
