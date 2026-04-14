@@ -50,7 +50,7 @@ export const emptyFormData: MaterialFormData = {
   live_site_features: '', premium_note: '', live_site_note: '',
 };
 
-const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership'];
+const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership', 'Templates', 'Portfolio'];
 
 const CATEGORIES = ['Templates', 'Code Snippets', 'Tutorials', 'UI Kits', 'Effects', 'Animations', 'Portfolio', 'Other'];
 const CONTENT_TYPES = ['HTML/CSS', 'JavaScript', 'React Component', 'Animation', 'Template', 'Full Project', 'Other'];
