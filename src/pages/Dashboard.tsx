@@ -198,6 +198,15 @@ export default function Dashboard() {
                       <Camera className="w-4 h-4" />
                     )}
                   </button>
+                  {profile?.avatar_url && (
+                    <button
+                      onClick={handleAvatarRemove}
+                      disabled={uploading}
+                      className="absolute top-0 right-0 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
                   <input
                     ref={fileInputRef}
                     type="file"
