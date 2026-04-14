@@ -239,6 +239,9 @@ export default function Admin() {
                 </div>
               </GlassCard>
             </div>
+
+            {/* Materials Section */}
+            <MaterialsSection />
           </motion.div>
         </div>
       </section>
