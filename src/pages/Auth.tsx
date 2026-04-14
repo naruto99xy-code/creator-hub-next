@@ -211,8 +211,8 @@ export default function Auth() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {isSignUp && (
+              <form onSubmit={isForgotPassword ? handleForgotPassword : handleSubmit} className="space-y-4">
+                {isSignUp && !isForgotPassword && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
