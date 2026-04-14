@@ -16,6 +16,7 @@ interface Product {
   image_url: string | null;
   category: string | null;
   download_count: number;
+  source?: 'product' | 'material';
 }
 
 const categories = [
@@ -47,11 +48,31 @@ export default function Shop() {
   }, []);
 
   const fetchProducts = async () => {
-    const { data } = await supabase
+    // Fetch from products table
+    const { data: productsData } = await supabase
       .from('products')
       .select('id, title, description, price, image_url, category, download_count')
       .eq('is_active', true);
-    setProducts(data || []);
+
+    // Fetch materials published to Shop section
+    const { data: materialsData } = await supabase
+      .from('materials')
+      .select('id, title, description, price, image_url, category, download_count, publish_sections')
+      .contains('publish_sections', ['Shop']);
+
+    const productItems: Product[] = (productsData || []).map(p => ({ ...p, source: 'product' as const }));
+    const materialItems: Product[] = (materialsData || []).map(m => ({
+      id: m.id,
+      title: m.title,
+      description: m.description || '',
+      price: m.price || 0,
+      image_url: m.image_url,
+      category: m.category,
+      download_count: m.download_count || 0,
+      source: 'material' as const,
+    }));
+
+    setProducts([...productItems, ...materialItems]);
     setLoading(false);
   };
 
