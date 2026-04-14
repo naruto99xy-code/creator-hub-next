@@ -21,7 +21,7 @@ const presetAmounts = [99, 199, 499, 999];
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.5, type: 'spring', stiffness: 120 },
+  transition: { delay, duration: 0.5, type: 'spring' as const, stiffness: 120 },
 });
 
 const impactStats = [
