@@ -211,7 +211,7 @@ export default function Auth() {
 
           <AnimatePresence mode="wait">
             <motion.div
-              key={isSignUp ? 'signup' : 'login'}
+              key={isForgotPassword ? 'forgot' : isSignUp ? 'signup' : 'login'}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -224,13 +224,13 @@ export default function Auth() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-lg shadow-primary/20"
                 >
-                  {isSignUp ? <User className="w-6 h-6 text-primary-foreground" /> : <Lock className="w-6 h-6 text-primary-foreground" />}
+                  {isForgotPassword ? <KeyRound className="w-6 h-6 text-primary-foreground" /> : isSignUp ? <User className="w-6 h-6 text-primary-foreground" /> : <Lock className="w-6 h-6 text-primary-foreground" />}
                 </motion.div>
                 <h1 className="text-3xl font-bold text-foreground">
-                  {isSignUp ? 'Create Account' : 'Welcome Back'}
+                  {isForgotPassword ? 'Reset Password' : isSignUp ? 'Create Account' : 'Welcome Back'}
                 </h1>
                 <p className="text-muted-foreground text-sm mt-1">
-                  {isSignUp ? 'Join the Next Developer community' : 'Sign in to continue your journey'}
+                  {isForgotPassword ? "Enter your email and we'll send a reset link" : isSignUp ? 'Join the Next Developer community' : 'Sign in to continue your journey'}
                 </p>
               </div>
 
@@ -263,28 +263,42 @@ export default function Auth() {
                   />
                 </div>
 
-                <div className="relative group">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    className="pl-10 pr-10 h-12 bg-muted/30 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-muted/50 rounded-xl transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+                {!isForgotPassword && (
+                  <div className="relative group">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Password"
+                      className="pl-10 pr-10 h-12 bg-muted/30 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-muted/50 rounded-xl transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                )}
+
+                {!isSignUp && !isForgotPassword && (
+                  <div className="text-right">
+                    <button
+                      type="button"
+                      onClick={() => setIsForgotPassword(true)}
+                      className="text-xs text-primary hover:text-primary/80 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
 
                 <motion.button
                   type="submit"
                   disabled={loading}
-                  whileHover={{ scale: 1.02, boxShadow: '0 8px 30px hsl(217 91% 60% / 0.4)' }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full h-12 rounded-xl font-semibold text-primary-foreground transition-all disabled:opacity-50 bg-gradient-to-r from-primary to-secondary shadow-lg shadow-primary/20 mt-2"
                 >
@@ -293,7 +307,7 @@ export default function Auth() {
                       <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                       Processing...
                     </span>
-                  ) : isSignUp ? 'Create Account' : 'Log In'}
+                  ) : isForgotPassword ? 'Send Reset Link' : isSignUp ? 'Create Account' : 'Log In'}
                 </motion.button>
               </form>
 
@@ -301,19 +315,25 @@ export default function Auth() {
               <div className="flex items-center gap-3 my-6">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <span className="text-xs text-muted-foreground">
-                  {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+                  {isForgotPassword ? 'Remembered your password?' : isSignUp ? 'Already have an account?' : "Don't have an account?"}
                 </span>
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
               </div>
 
               {/* Toggle */}
               <motion.button
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  if (isForgotPassword) {
+                    setIsForgotPassword(false);
+                  } else {
+                    setIsSignUp(!isSignUp);
+                  }
+                }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full h-10 rounded-xl text-center text-primary font-medium border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all text-sm"
               >
-                {isSignUp ? 'Sign In Instead' : 'Create an Account'}
+                {isForgotPassword ? 'Back to Sign In' : isSignUp ? 'Sign In Instead' : 'Create an Account'}
               </motion.button>
             </motion.div>
           </AnimatePresence>
