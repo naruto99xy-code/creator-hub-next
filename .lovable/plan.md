@@ -1,45 +1,61 @@
 
 
-## Plan: Fix Remaining Security Issues
+## Plan: Modern Admin Materials Panel
 
-### Status of Findings
+### Overview
+Create a new "Materials" management section in the admin panel with a 4-tab creation form (Basic, Code, Info, Preview), material listing with search/filter, and full CRUD operations. This adds to the existing Admin page without changing its current layout or functionality.
 
-| Finding | Status |
-|---------|--------|
-| Orders INSERT bypass | Already fixed (restricted to 'pending') |
-| Memberships self-INSERT | Already fixed (policy dropped) |
-| user_roles privilege escalation | Already secure (no INSERT policy for non-admins) |
-| Products file_url exposure | **Needs fix** |
+### Database Changes
 
-### Fix: Hide file_url from Public Product Reads
+**New `materials` table** with columns:
+- `id` (uuid, PK), `title`, `content_type`, `description`, `category`, `author`
+- `file_url`, `youtube_url`, `image_url`, `tags` (text[]), `software_compatibility` (text[])
+- `is_premium` (boolean), `is_featured` (boolean)
+- `html_code`, `css_code`, `js_code`
+- `html_intro`, `css_intro`, `js_intro`
+- `download_count` (default 0), `rating` (numeric, default 0)
+- `created_at`, `updated_at`, `user_id` (references auth.users)
 
-The `products` table has a `file_url` column that is exposed via the public SELECT policy "Anyone can view active products". Even though Shop.tsx already excludes `file_url` from its query, the column is still accessible to anyone who queries the table directly.
+**RLS policies**: Admin-only INSERT/UPDATE/DELETE, public SELECT for active materials.
 
-**Approach**: Replace the public SELECT policy with one that uses the existing `get_public_products()` RPC function pattern. Since RLS cannot do column-level filtering, we'll create a **database view** that excludes `file_url` and update Shop.tsx to use it, OR we simply ensure the existing `get_public_products()` function (which already excludes `file_url`) is the recommended path.
+**Storage bucket**: `material-thumbnails` (public) for thumbnail images.
 
-**Simplest non-breaking fix**: The frontend already excludes `file_url` from its select query. The `get_public_products()` function also excludes it. The risk is direct API access. We'll add a database trigger that NULLs out `file_url` on read for non-admins — but that's not possible with RLS.
+### New Components
 
-**Best approach**: Create a migration to drop the `file_url` column from `products` since `product_files` table already handles file storage separately. But the user said "do NOT change database structure."
+1. **`src/components/admin/MaterialForm.tsx`** — The 4-tab form component
+   - Tab 1 (Basic): Title, content type, description, category dropdown, author, file URL, YouTube URL, thumbnail upload with drag-and-drop preview, tags input, software compatibility input, premium/featured toggles
+   - Tab 2 (Code): Three code textareas styled with monospace font for HTML/CSS/JS
+   - Tab 3 (Info): Three textareas for HTML/CSS/JS introductions
+   - Tab 4 (Preview): Renders HTML+CSS+JS in a sandboxed iframe, shows placeholder when empty
 
-**Safest approach that doesn't break anything**:
-1. Create a new migration that replaces the public SELECT policy on `products` to exclude the `file_url` column using a security definer view
-2. Mark all three findings as fixed in the security dashboard
+2. **`src/components/admin/MaterialCard.tsx`** — Card component for material listing
+   - Shows thumbnail, title, category, type, downloads, rating, description snippet
+   - Edit and Delete action buttons
 
-Actually, the simplest effective fix: Create a trigger that automatically NULLs `file_url` when non-admin users read... No, triggers don't work on SELECT.
+3. **`src/components/admin/MaterialsSection.tsx`** — Container that combines form + list
+   - Search bar, category/type filter dropdowns
+   - Grid of MaterialCards
+   - Edit mode (loads material data into form)
 
-**Final approach**: Since RLS can't filter columns, and we can't change the table structure, we should:
-1. Ensure `file_url` values in the products table are NULL (move any existing values to `product_files`)
-2. Mark the finding as fixed with explanation that `file_url` is deprecated in favor of `product_files` table
+### Changes to Existing Files
 
-### Changes
+- **`src/pages/Admin.tsx`** — Add a `<MaterialsSection />` below the existing Products/Supporters grid. No existing UI is changed; it's appended as a new section.
 
-1. **Database migration** — Set all `file_url` values to NULL in products table (data-only, no schema change) using the insert tool, ensuring no sensitive URLs are exposed even on direct query
-2. **Mark findings as fixed** — Update security dashboard for all 3 findings with proper explanations
+### UI Design
+
+- Uses existing dark theme, GlassCard, GlowButton components
+- Tabs use Radix TabsPrimitive (already installed) with purple active indicator
+- Code textareas use `font-mono` with dark backgrounds
+- Cards use glassmorphism styling consistent with the rest of the app
+- Responsive: tabs stack vertically on mobile, material cards go from 1 to 2 to 3 columns
+- Toast notifications for success/error states
 
 ### Technical Details
 
-- No UI changes
-- No schema changes  
-- No code changes (Shop.tsx already excludes `file_url`)
-- Only nullify existing `file_url` data and update security findings
+- Materials saved to the `materials` database table via Supabase client
+- Thumbnail uploaded to `material-thumbnails` storage bucket
+- Preview tab uses `srcdoc` on a sandboxed iframe
+- Search filters client-side on fetched materials
+- Edit pre-fills the form; delete shows confirmation
+- Form validation: title and content_type are required
 
