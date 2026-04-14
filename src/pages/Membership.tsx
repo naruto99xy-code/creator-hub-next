@@ -4,6 +4,7 @@ import { GlowButton } from '@/components/ui/GlowButton';
 import { Check, Crown, Zap, Star, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRazorpay } from '@/hooks/useRazorpay';
+import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 
 const plans = [
   { name: 'Starter', price: 199, icon: Zap, features: ['Access to basic templates', 'Community Discord access', 'Monthly newsletter'], popular: false },
@@ -49,6 +50,7 @@ export default function Membership() {
           </div>
         </div>
       </section>
+      <PublishedMaterials section="Membership" title="Member Resources" subtitle="Exclusive content for members" />
     </Layout>
   );
 }

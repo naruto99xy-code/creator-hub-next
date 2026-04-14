@@ -1,5 +1,6 @@
 import { Layout } from '@/components/layout/Layout';
 import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
+import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 import { motion } from 'framer-motion';
 import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock, Package } from 'lucide-react';
 import { useRazorpay } from '@/hooks/useRazorpay';
@@ -395,6 +396,7 @@ export default function AI() {
           processing={processing}
         />
       )}
+      <PublishedMaterials section="AI" title="AI Resources" subtitle="Tools and materials for AI development" />
     </Layout>
   );
 }

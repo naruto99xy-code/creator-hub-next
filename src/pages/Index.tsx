@@ -15,6 +15,7 @@ import { MobileCTA } from '@/components/home/MobileCTA';
 import { AnimatedStat } from '@/components/home/AnimatedStat';
 import { NewsletterSection } from '@/components/home/NewsletterSection';
 import { useRef } from 'react';
+import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 
 const whySupportCards = [
   { icon: Rocket, title: 'Faster Learning', desc: 'Skip the guesswork with production-ready code and real-world patterns.' },
@@ -273,6 +274,7 @@ export default function Index() {
         <CreatorStorySection />
         <TechStackSection />
         <RoadmapSection />
+        <PublishedMaterials section="Home" title="Featured Materials" subtitle="Explore our latest resources and templates" />
         <NewsletterSection />
         <MobileCTA />
         <div className="h-20 md:hidden" />
