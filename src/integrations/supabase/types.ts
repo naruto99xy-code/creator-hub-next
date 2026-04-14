@@ -44,6 +44,87 @@ export type Database = {
         }
         Relationships: []
       }
+      materials: {
+        Row: {
+          author: string | null
+          category: string | null
+          content_type: string
+          created_at: string
+          css_code: string | null
+          css_intro: string | null
+          description: string | null
+          download_count: number
+          file_url: string | null
+          html_code: string | null
+          html_intro: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          is_premium: boolean
+          js_code: string | null
+          js_intro: string | null
+          rating: number
+          software_compatibility: string[] | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          content_type?: string
+          created_at?: string
+          css_code?: string | null
+          css_intro?: string | null
+          description?: string | null
+          download_count?: number
+          file_url?: string | null
+          html_code?: string | null
+          html_intro?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_premium?: boolean
+          js_code?: string | null
+          js_intro?: string | null
+          rating?: number
+          software_compatibility?: string[] | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          content_type?: string
+          created_at?: string
+          css_code?: string | null
+          css_intro?: string | null
+          description?: string | null
+          download_count?: number
+          file_url?: string | null
+          html_code?: string | null
+          html_intro?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_premium?: boolean
+          js_code?: string | null
+          js_intro?: string | null
+          rating?: number
+          software_compatibility?: string[] | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       membership_plans: {
         Row: {
           created_at: string | null
