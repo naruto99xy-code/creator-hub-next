@@ -64,6 +64,10 @@ export function MaterialsSection() {
       toast({ title: 'Title and Content Type are required', variant: 'destructive' });
       return;
     }
+    if (form.is_premium && (!form.price || form.price <= 0)) {
+      toast({ title: 'Price is required for premium materials and must be > 0', variant: 'destructive' });
+      return;
+    }
 
     setUploading(true);
     try {
@@ -83,6 +87,8 @@ export function MaterialsSection() {
         software_compatibility: form.software_compatibility ? form.software_compatibility.split(',').map((t) => t.trim()).filter(Boolean) : [],
         is_premium: form.is_premium,
         is_featured: form.is_featured,
+        price: form.is_premium ? form.price : 0,
+        publish_sections: form.publish_sections,
         html_code: form.html_code || null,
         css_code: form.css_code || null,
         js_code: form.js_code || null,
@@ -129,6 +135,8 @@ export function MaterialsSection() {
       software_compatibility: m.software_compatibility?.join(', ') || '',
       is_premium: m.is_premium,
       is_featured: m.is_featured,
+      price: (m as any).price || 0,
+      publish_sections: (m as any).publish_sections || [],
       html_code: m.html_code || '',
       css_code: m.css_code || '',
       js_code: m.js_code || '',
