@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { MaterialsSection } from '@/components/admin/MaterialsSection';
 
 export default function Admin() {
   const { user, isAdmin, loading } = useAuth();
