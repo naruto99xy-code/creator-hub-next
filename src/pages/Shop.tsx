@@ -27,6 +27,7 @@ const categories = [
   { label: 'Tools', value: 'Tools', icon: <Wrench className="w-4 h-4" />, color: 'from-green-500 to-emerald-500' },
   { label: 'Automation', value: 'Automation', icon: <Zap className="w-4 h-4" />, color: 'from-amber-500 to-orange-500' },
   { label: 'Resources', value: 'Resources', icon: <Package className="w-4 h-4" />, color: 'from-pink-500 to-rose-500' },
+  { label: 'Portfolio', value: 'Portfolio', icon: <Sparkles className="w-4 h-4" />, color: 'from-violet-500 to-purple-500' },
 ];
 
 const sampleProducts: Product[] = [
@@ -44,6 +45,7 @@ const getCategoryGradient = (cat: string | null) => {
     case 'Tools': return 'from-green-500/15 to-emerald-500/5';
     case 'Automation': return 'from-amber-500/15 to-orange-500/5';
     case 'Resources': return 'from-pink-500/15 to-rose-500/5';
+    case 'Portfolio': return 'from-violet-500/15 to-purple-500/5';
     default: return 'from-primary/10 to-transparent';
   }
 };
@@ -54,6 +56,7 @@ const getCategoryBorder = (cat: string | null) => {
     case 'Tools': return 'border-green-500/20 hover:border-green-500/40';
     case 'Automation': return 'border-amber-500/20 hover:border-amber-500/40';
     case 'Resources': return 'border-pink-500/20 hover:border-pink-500/40';
+    case 'Portfolio': return 'border-violet-500/20 hover:border-violet-500/40';
     default: return 'border-primary/20 hover:border-primary/40';
   }
 };
@@ -64,6 +67,7 @@ const getCategoryColor = (cat: string | null) => {
     case 'Tools': return '#10b981';
     case 'Automation': return '#f59e0b';
     case 'Resources': return '#ec4899';
+    case 'Portfolio': return '#8b5cf6';
     default: return '#a855f7';
   }
 };

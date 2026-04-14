@@ -40,7 +40,7 @@ export const emptyFormData: MaterialFormData = {
 
 const PUBLISH_SECTIONS = ['Home', 'Services', 'AI', 'Shop', 'Support', 'Membership'];
 
-const CATEGORIES = ['Templates', 'Code Snippets', 'Tutorials', 'UI Kits', 'Effects', 'Animations', 'Other'];
+const CATEGORIES = ['Templates', 'Code Snippets', 'Tutorials', 'UI Kits', 'Effects', 'Animations', 'Portfolio', 'Other'];
 const CONTENT_TYPES = ['HTML/CSS', 'JavaScript', 'React Component', 'Animation', 'Template', 'Full Project', 'Other'];
 
 interface MaterialFormProps {
