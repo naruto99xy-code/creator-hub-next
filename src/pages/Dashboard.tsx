@@ -138,6 +138,26 @@ export default function Dashboard() {
     toast({ title: 'Name updated!' });
   };
 
+  const handleAvatarRemove = async () => {
+    if (!user) return;
+    setUploading(true);
+    try {
+      // Remove from storage
+      const { data: files } = await supabase.storage.from('avatars').list(user.id);
+      if (files && files.length > 0) {
+        await supabase.storage.from('avatars').remove(files.map(f => `${user.id}/${f.name}`));
+      }
+      // Clear in profile
+      await supabase.from('profiles').update({ avatar_url: null }).eq('id', user.id);
+      setProfile((p) => p ? { ...p, avatar_url: null } : p);
+      toast({ title: 'Profile picture removed!' });
+    } catch (err: any) {
+      toast({ title: 'Remove failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
     : '';
@@ -198,6 +218,15 @@ export default function Dashboard() {
                       <Camera className="w-4 h-4" />
                     )}
                   </button>
+                  {profile?.avatar_url && (
+                    <button
+                      onClick={handleAvatarRemove}
+                      disabled={uploading}
+                      className="absolute top-0 right-0 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
                   <input
                     ref={fileInputRef}
                     type="file"
