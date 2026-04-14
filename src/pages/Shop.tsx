@@ -97,7 +97,7 @@ export default function Shop() {
       image_url: m.image_url,
       category: m.category,
       download_count: m.download_count || 0,
-      file_url: m.file_url,
+      file_url: null, // file_url is protected server-side, not exposed publicly
       source: 'material' as const,
     }));
 
