@@ -86,9 +86,7 @@ export default function Shop() {
       .eq('is_active', true);
 
     const { data: materialsData } = await supabase
-      .from('materials')
-      .select('id, title, description, price, image_url, category, download_count, publish_sections, file_url')
-      .contains('publish_sections', ['Shop']);
+      .rpc('get_public_materials', { p_section: 'Shop' });
 
     const productItems: Product[] = (productsData || []).map(p => ({ ...p, source: 'product' as const }));
     const materialItems: Product[] = (materialsData || []).map(m => ({
