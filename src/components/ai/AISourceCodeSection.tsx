@@ -138,96 +138,182 @@ const whatsIncluded = [
 ];
 
 function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodeProduct; onBuy: (p: SourceCodeProduct) => void; processing: boolean }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.02, y: -4 }}
+      transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
+      whileHover={{ scale: 1.03, y: -8 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       className="relative group"
     >
-      <div
-        className="absolute -inset-0.5 rounded-2xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-500"
+      {/* Animated outer glow */}
+      <motion.div
+        animate={{
+          opacity: isHovered ? 0.7 : 0.25,
+          scale: isHovered ? 1.02 : 1,
+        }}
+        transition={{ duration: 0.4 }}
+        className="absolute -inset-1 rounded-3xl blur-xl"
         style={{ background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})` }}
       />
-      <div className="relative h-full flex flex-col rounded-2xl border border-white/10 bg-card/70 backdrop-blur-xl p-6 overflow-hidden">
-        {/* Top gradient line */}
-        <div
+
+      {/* Rotating border beam */}
+      <div className="absolute -inset-[1px] rounded-3xl overflow-hidden">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+          className="absolute inset-[-50%] origin-center"
+          style={{
+            background: `conic-gradient(from 0deg, transparent 60%, ${product.gradientFrom}, ${product.gradientTo}, transparent 100%)`,
+          }}
+        />
+      </div>
+
+      <div className="relative h-full flex flex-col rounded-3xl border border-white/10 bg-card/80 backdrop-blur-2xl p-7 overflow-hidden">
+        {/* Animated top gradient line */}
+        <motion.div
+          animate={{ backgroundPosition: isHovered ? '200% 0' : '0% 0' }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           className="absolute top-0 left-0 right-0 h-[2px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${product.gradientFrom}, ${product.gradientTo}, transparent)` }}
+          style={{
+            backgroundSize: '200% 100%',
+            backgroundImage: `linear-gradient(90deg, transparent, ${product.gradientFrom}, ${product.gradientTo}, transparent, ${product.gradientFrom}, ${product.gradientTo}, transparent)`,
+          }}
         />
 
+        {/* Corner accent dots */}
+        <div className="absolute top-3 right-3 w-2 h-2 rounded-full animate-pulse" style={{ background: product.gradientTo, boxShadow: `0 0 8px ${product.gradientTo}` }} />
+        <div className="absolute bottom-3 left-3 w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: product.gradientFrom, boxShadow: `0 0 6px ${product.gradientFrom}`, animationDelay: '1s' }} />
+
         {/* Badge */}
-        <span
-          className="self-start text-[10px] font-bold tracking-widest px-3 py-1 rounded-full mb-4"
+        <motion.span
+          whileHover={{ scale: 1.05 }}
+          className="self-start text-[10px] font-bold tracking-widest px-3 py-1.5 rounded-full mb-5 backdrop-blur-sm"
           style={{
-            background: `linear-gradient(135deg, ${product.gradientFrom}22, ${product.gradientTo}22)`,
+            background: `linear-gradient(135deg, ${product.gradientFrom}25, ${product.gradientTo}15)`,
             color: product.gradientTo,
-            border: `1px solid ${product.gradientFrom}44`,
+            border: `1px solid ${product.gradientFrom}55`,
+            boxShadow: `0 0 12px ${product.gradientFrom}20`,
           }}
         >
           {product.badge}
-        </span>
+        </motion.span>
 
         {/* Icon + Name */}
-        <div className="flex flex-col items-center text-center mb-4">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3"
-            style={{ background: `linear-gradient(135deg, ${product.gradientFrom}33, ${product.gradientTo}33)` }}
+        <div className="flex flex-col items-center text-center mb-5">
+          <motion.div
+            animate={isHovered ? { rotateY: 360 } : { rotateY: 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            className="w-18 h-18 rounded-2xl flex items-center justify-center mb-3 relative"
+            style={{
+              background: `linear-gradient(145deg, ${product.gradientFrom}30, ${product.gradientTo}20)`,
+              border: `1px solid ${product.gradientTo}30`,
+              boxShadow: `0 8px 32px ${product.gradientFrom}25, inset 0 1px 0 ${product.gradientTo}20`,
+              width: '72px',
+              height: '72px',
+            }}
           >
-            <span style={{ color: product.gradientTo }}>{product.icon}</span>
+            <span style={{ color: product.gradientTo, filter: `drop-shadow(0 0 6px ${product.gradientTo}66)` }}>{product.icon}</span>
+          </motion.div>
+          <h3 className="text-xl font-bold text-foreground tracking-tight">{product.name}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{product.subtitle}</p>
+        </div>
+
+        {/* Price with animated highlight */}
+        <div className="text-center mb-5 relative">
+          <motion.div
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="absolute inset-0 rounded-xl -m-2"
+            style={{ background: `radial-gradient(ellipse at center, ${product.gradientFrom}10 0%, transparent 70%)` }}
+          />
+          <div className="relative">
+            <span className="text-sm text-muted-foreground line-through mr-2 opacity-60">₹{product.originalPrice.toLocaleString()}</span>
+            <span
+              className="text-3xl font-extrabold"
+              style={{
+                background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: `drop-shadow(0 0 8px ${product.gradientFrom}40)`,
+              }}
+            >
+              ₹{product.price.toLocaleString()}
+            </span>
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide ml-2"
+              style={{
+                background: `linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))`,
+                color: '#4ade80',
+                border: '1px solid rgba(34,197,94,0.3)',
+                boxShadow: '0 0 10px rgba(34,197,94,0.15)',
+              }}
+            >
+              {product.savings}
+            </motion.div>
           </div>
-          <h3 className="text-xl font-bold text-foreground">{product.name}</h3>
-          <p className="text-xs text-muted-foreground">{product.subtitle}</p>
         </div>
 
-        {/* Price */}
-        <div className="text-center mb-4">
-          <span className="text-base text-muted-foreground line-through mr-2">₹{product.originalPrice.toLocaleString()}</span>
-          <span className="text-3xl font-extrabold text-foreground">₹{product.price.toLocaleString()}</span>
-          <div
-            className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-green-500/20 text-green-400 border border-green-500/30 ml-2"
-          >
-            {product.savings}
-          </div>
+        {/* Payment badge */}
+        <div className="flex items-center justify-center gap-2 mb-5 px-3 py-1.5 rounded-full bg-muted/30 border border-border/50 w-fit mx-auto">
+          <span className="text-[10px]">💳</span>
+          <span className="text-[10px] text-muted-foreground font-medium tracking-wide">Razorpay • UPI • Cards</span>
         </div>
 
-        {/* Razorpay badge */}
-        <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
-          <span>💳</span>
-          <span>Razorpay | UPI</span>
-        </div>
-
-        {/* Features */}
-        <ul className="space-y-2 mb-6 flex-1">
-          {product.features.map((f) => (
-            <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: product.gradientTo }} />
-              {f}
-            </li>
+        {/* Features with staggered animation */}
+        <ul className="space-y-2.5 mb-7 flex-1">
+          {product.features.map((f, i) => (
+            <motion.li
+              key={f}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="flex items-center gap-2.5 text-sm text-muted-foreground group/item"
+            >
+              <div
+                className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover/item:scale-110"
+                style={{
+                  background: `linear-gradient(135deg, ${product.gradientFrom}20, ${product.gradientTo}15)`,
+                  border: `1px solid ${product.gradientTo}25`,
+                }}
+              >
+                <Check className="w-3 h-3" style={{ color: product.gradientTo }} />
+              </div>
+              <span className="transition-colors duration-200 group-hover/item:text-foreground">{f}</span>
+            </motion.li>
           ))}
         </ul>
 
-        {/* Button */}
+        {/* Enhanced Button */}
         <motion.button
-          whileTap={{ scale: 0.96 }}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ boxShadow: `0 0 40px ${product.gradientFrom}66, 0 0 80px ${product.gradientFrom}22` }}
           disabled={processing}
           onClick={() => onBuy(product)}
-          className="w-full py-3 rounded-xl font-semibold text-sm text-white transition-shadow duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, ${product.gradientFrom}, ${product.gradientTo})`,
-            boxShadow: `0 0 20px ${product.gradientFrom}55`,
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 35px ${product.gradientFrom}88`;
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 20px ${product.gradientFrom}55`;
+            boxShadow: `0 0 25px ${product.gradientFrom}44, 0 4px 15px ${product.gradientFrom}33`,
           }}
         >
-          {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-          {product.buttonText}
+          {/* Button shine effect */}
+          <motion.div
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
+            className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]"
+          />
+          <span className="relative flex items-center gap-2">
+            {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            {product.buttonText}
+          </span>
         </motion.button>
       </div>
     </motion.div>
