@@ -1,5 +1,6 @@
 import { Layout } from '@/components/layout/Layout';
 import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
+import { AISourceCodeSection } from '@/components/ai/AISourceCodeSection';
 import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 import { motion } from 'framer-motion';
 import { Bot, Sparkles, Heart, Code, Brain, MessageCircleHeart, Zap, Check, Loader2, Lock, Package } from 'lucide-react';
