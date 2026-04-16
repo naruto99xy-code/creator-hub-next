@@ -380,6 +380,9 @@ export default function AI() {
         </div>
       </section>
 
+      {/* AI Source Code Section */}
+      <AISourceCodeSection />
+
       {/* AI Features Deep Breakdown */}
       <Myra2FeaturesSection />
 
