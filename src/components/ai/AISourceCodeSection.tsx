@@ -491,15 +491,19 @@ export function AISourceCodeSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-10"
+            className="text-center mb-8"
           >
             <h3 className="text-2xl md:text-3xl font-bold">
               Or Buy <span className="glow-text">Individual</span> Source Code
             </h3>
           </motion.div>
 
+          {sale.active && (
+            <FlashSaleBanner hours={sale.hours} minutes={sale.minutes} seconds={sale.seconds} />
+          )}
+
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-w-5xl mx-auto mb-16">
-            {individualProducts.map((product) => (
+            {individualDisplay.map((product) => (
               <SourceCodeCard key={product.name} product={product} onBuy={handleBuy} processing={processing} />
             ))}
           </div>
