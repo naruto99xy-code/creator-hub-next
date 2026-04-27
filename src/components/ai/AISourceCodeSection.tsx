@@ -423,7 +423,15 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
 export function AISourceCodeSection() {
   const { handlePurchaseWithDetails, processing } = useRazorpay();
   const [selectedProduct, setSelectedProduct] = useState<SourceCodeProduct | null>(null);
+  const sale = useSaleCountdown();
 
+  // Apply flash sale pricing to individual products only
+  const individualDisplay: SourceCodeProduct[] = individualProducts.map((p) => {
+    if (sale.active) {
+      return { ...p, price: SALE_PRICE, originalPrice: DEFAULT_PRICE, savings: 'Save ₹1,000' };
+    }
+    return { ...p, price: DEFAULT_PRICE, originalPrice: DEFAULT_PRICE, savings: '' };
+  });
   const handleBuy = (product: SourceCodeProduct) => {
     setSelectedProduct(product);
   };
