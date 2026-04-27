@@ -1,8 +1,108 @@
-import { motion } from 'framer-motion';
-import { Code, Package, Sparkles, Heart, Bot, Check, Loader2, Download } from 'lucide-react';
-import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Code, Package, Sparkles, Heart, Bot, Check, Loader2, Download, Flame, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { PaymentModal } from '@/components/shop/PaymentModal';
+
+// Flash sale: ₹3,500 for 24 hours, then auto-revert to ₹4,500
+const SALE_END = new Date('2026-04-28T07:03:36.556Z').getTime();
+const SALE_PRICE = 3500;
+const DEFAULT_PRICE = 4500;
+
+function useSaleCountdown() {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, SALE_END - now);
+  const active = diff > 0;
+  const totalSec = Math.floor(diff / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  return { active, hours, minutes, seconds };
+}
+
+function DigitBlock({ value, label }: { value: number; label: string }) {
+  const padded = value.toString().padStart(2, '0');
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative min-w-[58px] sm:min-w-[68px] px-3 py-2 rounded-xl border border-cyan-400/40 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 backdrop-blur-md overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            key={padded}
+            initial={{ y: -16, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 16, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="block text-2xl sm:text-3xl font-extrabold text-center tabular-nums bg-gradient-to-b from-cyan-300 to-purple-400 bg-clip-text text-transparent"
+            style={{ filter: 'drop-shadow(0 0 8px rgba(34,211,238,0.5))' }}
+          >
+            {padded}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <span className="mt-1.5 text-[9px] sm:text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{label}</span>
+    </div>
+  );
+}
+
+function FlashSaleBanner({ hours, minutes, seconds }: { hours: number; minutes: number; seconds: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, type: 'spring' }}
+      className="relative max-w-2xl mx-auto mb-8"
+    >
+      {/* Outer pulsing glow */}
+      <motion.div
+        animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.02, 1] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -inset-1 rounded-3xl blur-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
+      />
+      <div className="relative rounded-3xl border border-white/15 bg-card/85 backdrop-blur-2xl p-5 sm:p-6 overflow-hidden">
+        {/* Top gradient line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+        {/* Animated flame icon */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <motion.div
+              animate={{ rotate: [-8, 8, -8], scale: [1, 1.1, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-orange-500/30 to-red-500/30 border border-orange-400/40"
+              style={{ boxShadow: '0 0 20px rgba(251,146,60,0.4)' }}
+            >
+              <Flame className="w-6 h-6 text-orange-400" />
+            </motion.div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black tracking-[0.2em] text-orange-400 uppercase">Flash Sale</span>
+                <span className="text-[10px] font-bold tracking-wide text-green-400 px-2 py-0.5 rounded-full bg-green-500/15 border border-green-500/30">SAVE ₹1,000</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-extrabold text-foreground mt-0.5">
+                All Source Codes <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">₹3,500</span>
+              </h3>
+              <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 justify-center sm:justify-start">
+                <Clock className="w-3 h-3" /> Resets to ₹4,500 after timer ends
+              </p>
+            </div>
+          </div>
+          {/* Countdown */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <DigitBlock value={hours} label="Hrs" />
+            <span className="text-2xl font-bold text-cyan-400/60 -mt-4">:</span>
+            <DigitBlock value={minutes} label="Min" />
+            <span className="text-2xl font-bold text-cyan-400/60 -mt-4">:</span>
+            <DigitBlock value={seconds} label="Sec" />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 interface SourceCodeProduct {
   name: string;
@@ -233,7 +333,9 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
             style={{ background: `radial-gradient(ellipse at center, ${product.gradientFrom}10 0%, transparent 70%)` }}
           />
           <div className="relative">
-            <span className="text-sm text-muted-foreground line-through mr-2 opacity-60">₹{product.originalPrice.toLocaleString()}</span>
+            {product.originalPrice > product.price && (
+              <span className="text-sm text-muted-foreground line-through mr-2 opacity-60">₹{product.originalPrice.toLocaleString()}</span>
+            )}
             <span
               className="text-3xl font-extrabold"
               style={{
@@ -245,19 +347,21 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
             >
               ₹{product.price.toLocaleString()}
             </span>
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide ml-2"
-              style={{
-                background: `linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))`,
-                color: '#4ade80',
-                border: '1px solid rgba(34,197,94,0.3)',
-                boxShadow: '0 0 10px rgba(34,197,94,0.15)',
-              }}
-            >
-              {product.savings}
-            </motion.div>
+            {product.savings && (
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide ml-2"
+                style={{
+                  background: `linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))`,
+                  color: '#4ade80',
+                  border: '1px solid rgba(34,197,94,0.3)',
+                  boxShadow: '0 0 10px rgba(34,197,94,0.15)',
+                }}
+              >
+                {product.savings}
+              </motion.div>
+            )}
           </div>
         </div>
 
@@ -323,7 +427,15 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
 export function AISourceCodeSection() {
   const { handlePurchaseWithDetails, processing } = useRazorpay();
   const [selectedProduct, setSelectedProduct] = useState<SourceCodeProduct | null>(null);
+  const sale = useSaleCountdown();
 
+  // Apply flash sale pricing to individual products only
+  const individualDisplay: SourceCodeProduct[] = individualProducts.map((p) => {
+    if (sale.active) {
+      return { ...p, price: SALE_PRICE, originalPrice: DEFAULT_PRICE, savings: 'Save ₹1,000' };
+    }
+    return { ...p, price: DEFAULT_PRICE, originalPrice: DEFAULT_PRICE, savings: '' };
+  });
   const handleBuy = (product: SourceCodeProduct) => {
     setSelectedProduct(product);
   };
@@ -391,15 +503,19 @@ export function AISourceCodeSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-10"
+            className="text-center mb-8"
           >
             <h3 className="text-2xl md:text-3xl font-bold">
               Or Buy <span className="glow-text">Individual</span> Source Code
             </h3>
           </motion.div>
 
+          {sale.active && (
+            <FlashSaleBanner hours={sale.hours} minutes={sale.minutes} seconds={sale.seconds} />
+          )}
+
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-w-5xl mx-auto mb-16">
-            {individualProducts.map((product) => (
+            {individualDisplay.map((product) => (
               <SourceCodeCard key={product.name} product={product} onBuy={handleBuy} processing={processing} />
             ))}
           </div>
