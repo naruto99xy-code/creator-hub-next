@@ -333,7 +333,9 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
             style={{ background: `radial-gradient(ellipse at center, ${product.gradientFrom}10 0%, transparent 70%)` }}
           />
           <div className="relative">
-            <span className="text-sm text-muted-foreground line-through mr-2 opacity-60">₹{product.originalPrice.toLocaleString()}</span>
+            {product.originalPrice > product.price && (
+              <span className="text-sm text-muted-foreground line-through mr-2 opacity-60">₹{product.originalPrice.toLocaleString()}</span>
+            )}
             <span
               className="text-3xl font-extrabold"
               style={{
@@ -345,19 +347,21 @@ function SourceCodeCard({ product, onBuy, processing }: { product: SourceCodePro
             >
               ₹{product.price.toLocaleString()}
             </span>
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide ml-2"
-              style={{
-                background: `linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))`,
-                color: '#4ade80',
-                border: '1px solid rgba(34,197,94,0.3)',
-                boxShadow: '0 0 10px rgba(34,197,94,0.15)',
-              }}
-            >
-              {product.savings}
-            </motion.div>
+            {product.savings && (
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide ml-2"
+                style={{
+                  background: `linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))`,
+                  color: '#4ade80',
+                  border: '1px solid rgba(34,197,94,0.3)',
+                  boxShadow: '0 0 10px rgba(34,197,94,0.15)',
+                }}
+              >
+                {product.savings}
+              </motion.div>
+            )}
           </div>
         </div>
 
