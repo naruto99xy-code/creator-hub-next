@@ -163,6 +163,7 @@ export default function Index() {
         </div>
 
         <FeaturesSection />
+        <SEOContentSection />
 
         {/* Why Support Me - Premium Glass Cards */}
         <section className="py-24 relative overflow-hidden">
