@@ -16,6 +16,7 @@ import { AnimatedStat } from '@/components/home/AnimatedStat';
 import { NewsletterSection } from '@/components/home/NewsletterSection';
 import { useRef } from 'react';
 import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
+import { SEOContentSection } from '@/components/home/SEOContentSection';
 
 const whySupportCards = [
   { icon: Rocket, title: 'Faster Learning', desc: 'Skip the guesswork with production-ready code and real-world patterns.' },
