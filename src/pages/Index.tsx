@@ -16,6 +16,7 @@ import { AnimatedStat } from '@/components/home/AnimatedStat';
 import { NewsletterSection } from '@/components/home/NewsletterSection';
 import { useRef } from 'react';
 import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
+import { SEOContentSection } from '@/components/home/SEOContentSection';
 
 const whySupportCards = [
   { icon: Rocket, title: 'Faster Learning', desc: 'Skip the guesswork with production-ready code and real-world patterns.' },
@@ -45,7 +46,7 @@ export default function Index() {
           className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
         >
           <div className="absolute inset-0">
-            <img src={heroBanner} alt="Hero Banner" className="w-full h-full object-cover opacity-15" />
+            <img src={heroBanner} alt="Next Developer (NextDeveloper) - Web & App Development Company" className="w-full h-full object-cover opacity-15" />
             <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/60 to-background" />
             <div className="orb orb-purple w-[500px] h-[500px] -top-40 -left-40" style={{ animationDelay: '0s' }} />
             <div className="orb orb-blue w-[400px] h-[400px] top-20 -right-20" style={{ animationDelay: '2s' }} />
@@ -67,6 +68,7 @@ export default function Index() {
                 >
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
                     <span className="glow-text">Next Developer</span>
+                    <span className="block text-2xl md:text-3xl lg:text-4xl mt-3 text-foreground/80 font-semibold">(NextDeveloper)</span>
                   </h1>
                 </motion.div>
                 <motion.p 
@@ -161,6 +163,7 @@ export default function Index() {
         </div>
 
         <FeaturesSection />
+        <SEOContentSection />
 
         {/* Why Support Me - Premium Glass Cards */}
         <section className="py-24 relative overflow-hidden">
