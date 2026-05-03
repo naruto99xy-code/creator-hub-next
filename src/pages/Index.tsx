@@ -68,7 +68,6 @@ export default function Index() {
                 >
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
                     <span className="glow-text">Next Developer</span>
-                    <span className="block text-2xl md:text-3xl lg:text-4xl mt-3 text-foreground/80 font-semibold">(NextDeveloper)</span>
                   </h1>
                 </motion.div>
                 <motion.p 
