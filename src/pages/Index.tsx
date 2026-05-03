@@ -45,7 +45,7 @@ export default function Index() {
           className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
         >
           <div className="absolute inset-0">
-            <img src={heroBanner} alt="Hero Banner" className="w-full h-full object-cover opacity-15" />
+            <img src={heroBanner} alt="Next Developer (NextDeveloper) - Web & App Development Company" className="w-full h-full object-cover opacity-15" />
             <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/60 to-background" />
             <div className="orb orb-purple w-[500px] h-[500px] -top-40 -left-40" style={{ animationDelay: '0s' }} />
             <div className="orb orb-blue w-[400px] h-[400px] top-20 -right-20" style={{ animationDelay: '2s' }} />
