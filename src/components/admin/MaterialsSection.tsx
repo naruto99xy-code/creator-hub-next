@@ -185,7 +185,7 @@ export function MaterialsSection() {
   });
 
   return (
-    <GlassCard className="mt-8">
+    <GlassCard>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h2 className="text-xl font-bold">Materials</h2>
         <GlowButton size="sm" onClick={() => { setShowForm(!showForm); if (showForm) resetForm(); }}>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-const RAZORPAY_KEY_ID = 'rzp_live_SHJ1Thmo1tv1Z6';
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID as string;
 
 declare global {
   interface Window {

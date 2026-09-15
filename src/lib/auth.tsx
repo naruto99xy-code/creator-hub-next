@@ -7,6 +7,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  adminChecked: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -19,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -35,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }, 0);
         } else {
           setIsAdmin(false);
+          setAdminChecked(true);
         }
       }
     );
@@ -47,6 +50,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (session?.user) {
         checkAdminRole(session.user.id);
+      } else {
+        setAdminChecked(true);
       }
     });
 
@@ -72,6 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error checking admin role:', error);
       setIsAdmin(false);
+    } finally {
+      setAdminChecked(true);
     }
   };
 
@@ -106,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAdmin, adminChecked, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

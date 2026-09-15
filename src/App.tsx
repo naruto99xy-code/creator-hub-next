@@ -16,7 +16,12 @@ import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
 import AI from "./pages/AI";
 import Dashboard from "./pages/Dashboard";
-import Admin from "./pages/Admin";
+import { AdminSidebarLayout } from "@/components/admin/AdminSidebarLayout";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminMaterials from "./pages/admin/AdminMaterials";
+import AdminAIProducts from "./pages/admin/AdminAIProducts";
+import AdminAppReleases from "./pages/admin/AdminAppReleases";
+import AdminPromotions from "./pages/admin/AdminPromotions";
 import NotFound from "./pages/NotFound";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -57,7 +62,13 @@ const App = () => {
               <Route path="/shop" element={<Shop />} />
               <Route path="/shop/:id" element={<ProductDetail />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<AdminSidebarLayout />}>
+                <Route index element={<AdminOverview />} />
+                <Route path="materials" element={<AdminMaterials />} />
+                <Route path="ai-products" element={<AdminAIProducts />} />
+                <Route path="app-releases" element={<AdminAppReleases />} />
+                <Route path="promotions" element={<AdminPromotions />} />
+              </Route>
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund" element={<Refund />} />

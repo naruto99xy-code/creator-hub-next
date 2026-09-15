@@ -14,6 +14,177 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_products: {
+        Row: {
+          badge: string
+          banner_url: string | null
+          border_color: string
+          button_text: string
+          category: string
+          created_at: string
+          display_order: number
+          features: string[]
+          gradient_from: string
+          gradient_to: string
+          icon_name: string
+          id: string
+          is_active: boolean
+          is_coming_soon: boolean
+          is_featured: boolean
+          logo_url: string | null
+          name: string
+          original_price: number | null
+          price: number
+          slug: string
+          subtitle: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string
+          banner_url?: string | null
+          border_color?: string
+          button_text?: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          features?: string[]
+          gradient_from?: string
+          gradient_to?: string
+          icon_name?: string
+          id?: string
+          is_active?: boolean
+          is_coming_soon?: boolean
+          is_featured?: boolean
+          logo_url?: string | null
+          name: string
+          original_price?: number | null
+          price?: number
+          slug: string
+          subtitle?: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string
+          banner_url?: string | null
+          border_color?: string
+          button_text?: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          features?: string[]
+          gradient_from?: string
+          gradient_to?: string
+          icon_name?: string
+          id?: string
+          is_active?: boolean
+          is_coming_soon?: boolean
+          is_featured?: boolean
+          logo_url?: string | null
+          name?: string
+          original_price?: number | null
+          price?: number
+          slug?: string
+          subtitle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      promotions: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          discount_type: string
+          discount_value: number
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          message: string | null
+          product_ids: string[]
+          scope: string
+          starts_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          message?: string | null
+          product_ids?: string[]
+          scope?: string
+          starts_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          message?: string | null
+          product_ids?: string[]
+          scope?: string
+          starts_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      app_releases: {
+        Row: {
+          app_name: string
+          created_at: string
+          download_url: string
+          file_size_mb: number | null
+          icon_url: string | null
+          id: string
+          is_published: boolean
+          platform: string
+          release_notes: string | null
+          updated_at: string
+          user_id: string | null
+          version_code: number | null
+          version_name: string
+        }
+        Insert: {
+          app_name: string
+          created_at?: string
+          download_url: string
+          file_size_mb?: number | null
+          icon_url?: string | null
+          id?: string
+          is_published?: boolean
+          platform?: string
+          release_notes?: string | null
+          updated_at?: string
+          user_id?: string | null
+          version_code?: number | null
+          version_name: string
+        }
+        Update: {
+          app_name?: string
+          created_at?: string
+          download_url?: string
+          file_size_mb?: number | null
+          icon_url?: string | null
+          id?: string
+          is_published?: boolean
+          platform?: string
+          release_notes?: string | null
+          updated_at?: string
+          user_id?: string | null
+          version_code?: number | null
+          version_name?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           budget_range: string | null
