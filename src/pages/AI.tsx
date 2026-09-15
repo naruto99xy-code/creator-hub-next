@@ -3,7 +3,7 @@ import { Myra2FeaturesSection } from '@/components/ai/Myra2FeaturesSection';
 import { AISourceCodeSection } from '@/components/ai/AISourceCodeSection';
 import { PublishedMaterials } from '@/components/shared/PublishedMaterials';
 import { PromoBanner } from '@/components/shared/PromoBanner';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Check, Loader2, Lock } from 'lucide-react';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { useEffect, useRef, useState } from 'react';
@@ -18,6 +18,9 @@ import { AITrustSection } from '@/components/ai/AITrustSection';
 import { AIResourcesSection } from '@/components/ai/AIResourcesSection';
 import { AIServicePromo } from '@/components/ai/AIServicePromo';
 import { AIClosingCTA } from '@/components/ai/AIClosingCTA';
+import { AICursorGlow } from '@/components/ai/AICursorGlow';
+import { AIScrollProgress } from '@/components/ai/AIScrollProgress';
+import { AISectionDivider } from '@/components/ai/AISectionDivider';
 import { useAIProducts, AIProductRow } from '@/hooks/useAIProducts';
 import { useActivePromotion, applyDiscount } from '@/hooks/useActivePromotion';
 import { getIcon } from '@/lib/iconMap';
@@ -97,13 +100,32 @@ interface AICardProps {
 
 function AICard({ product, displayPrice, strikePrice, index, onBuy, processing }: AICardProps) {
   const Icon = getIcon(product.icon_name);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+  const rotateX = useTransform(springY, [0, 1], [6, -6]);
+  const rotateY = useTransform(springX, [0, 1], [-6, 6]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current || product.is_coming_soon) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={product.is_coming_soon ? {} : { scale: 1.04, y: -8 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { mouseX.set(0.5); mouseY.set(0.5); }}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
       className="relative group"
     >
       <div
@@ -239,6 +261,9 @@ export default function AI() {
 
   return (
     <Layout>
+      <AIScrollProgress />
+      <AICursorGlow />
+
       {/* Event / discount banner scoped to the AI section */}
       <PromoBanner scope="ai_products" />
 
@@ -247,12 +272,14 @@ export default function AI() {
 
       {/* Desktop install steps */}
       <AIInstallSection />
+      <AISectionDivider />
 
       {/* Mobile app download */}
       <AIAppDownloadSection />
 
       {/* Free PC companion download */}
       <AIPcDownloadSection />
+      <AISectionDivider variant="secondary" />
 
       {/* Features overview */}
       <AIFeaturesOverview />
@@ -264,6 +291,7 @@ export default function AI() {
 
       {/* Trust badges */}
       <AITrustSection />
+      <AISectionDivider />
 
       {/* API resources for building on Jarvis/Myra */}
       <AIResourcesSection />
@@ -278,9 +306,7 @@ export default function AI() {
       {/* Closing CTA */}
       <AIClosingCTA />
 
-      <div className="relative h-px max-w-5xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent" />
-      </div>
+      <AISectionDivider />
 
       {/* Original hero content kept below as a secondary intro */}
       <section className="pt-16 pb-16 relative overflow-hidden">

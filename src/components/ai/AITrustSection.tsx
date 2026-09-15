@@ -21,11 +21,15 @@ export function AITrustSection() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <GlassCard className="text-center h-full">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+              <GlassCard className="text-center h-full group" hover>
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4 group-hover:shadow-[0_0_25px_hsl(var(--primary)/0.5)] transition-shadow"
+                >
                   <item.icon className="w-8 h-8 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                </motion.div>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.description}</p>
               </GlassCard>
             </motion.div>
