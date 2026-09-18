@@ -19,6 +19,7 @@ import Dashboard from "./pages/Dashboard";
 import { AdminSidebarLayout } from "@/components/admin/AdminSidebarLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminMaterials from "./pages/admin/AdminMaterials";
+import AdminShopProducts from "./pages/admin/AdminShopProducts";
 import AdminAIProducts from "./pages/admin/AdminAIProducts";
 import AdminAppReleases from "./pages/admin/AdminAppReleases";
 import AdminPromotions from "./pages/admin/AdminPromotions";
@@ -65,6 +66,7 @@ const App = () => {
               <Route path="/admin" element={<AdminSidebarLayout />}>
                 <Route index element={<AdminOverview />} />
                 <Route path="materials" element={<AdminMaterials />} />
+                <Route path="shop-products" element={<AdminShopProducts />} />
                 <Route path="ai-products" element={<AdminAIProducts />} />
                 <Route path="app-releases" element={<AdminAppReleases />} />
                 <Route path="promotions" element={<AdminPromotions />} />
