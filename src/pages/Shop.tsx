@@ -245,7 +245,7 @@ export default function Shop() {
                 >
                   {/* Card border glow on hover */}
                   <div
-                    className={`h-full rounded-2xl border ${getCategoryBorder(product.category)} bg-gradient-to-b ${getCategoryGradient(product.category)} backdrop-blur-xl p-5 transition-all duration-500 overflow-hidden relative cursor-pointer`}
+                    className={`h-full rounded-2xl border ${getCategoryBorder(product.category)} bg-gradient-to-b ${getCategoryGradient(product.category)} backdrop-blur-xl p-5 transition-all duration-500 overflow-hidden relative cursor-pointer shadow-lg shadow-black/20 group-hover:shadow-2xl group-hover:shadow-black/30`}
                     onClick={() => {
                       if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
                         navigate(`/shop/${product.id}`);
@@ -258,9 +258,12 @@ export default function Shop() {
                     />
 
                     {/* Image */}
-                    <div className="aspect-video bg-muted/50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative">
+                    <div className="aspect-video bg-muted/50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative ring-1 ring-white/10 group-hover:ring-white/20 shadow-inner transition-all duration-500">
                       {product.image_url ? (
-                        <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <>
+                          <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                        </>
                       ) : (
                         <div className="flex flex-col items-center gap-2">
                           <Package className="w-10 h-10 text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300" />
