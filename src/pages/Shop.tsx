@@ -4,8 +4,10 @@ import { Layout } from '@/components/layout/Layout';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { supabase } from '@/integrations/supabase/client';
-import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen, Sparkles, Crown, Star, TrendingUp } from 'lucide-react';
+import { Package, ShoppingCart, Download, Loader2, LayoutTemplate, Wrench, Zap, FolderOpen, Sparkles, Crown, Star, TrendingUp, Box, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
+import { useAuth } from '@/lib/auth';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { PaymentModal } from '@/components/shop/PaymentModal';
 import { ShopHero3D } from '@/components/shop/ShopHero3D';
@@ -29,6 +31,7 @@ const categories = [
   { label: 'Automation', value: 'Automation', icon: <Zap className="w-4 h-4" />, color: 'from-amber-500 to-orange-500' },
   { label: 'Resources', value: 'Resources', icon: <Package className="w-4 h-4" />, color: 'from-pink-500 to-rose-500' },
   { label: 'Portfolio', value: 'Portfolio', icon: <Sparkles className="w-4 h-4" />, color: 'from-violet-500 to-purple-500' },
+  { label: '3D Templates', value: '3D Templates', icon: <Box className="w-4 h-4" />, color: 'from-fuchsia-500 to-indigo-500' },
 ];
 
 const sampleProducts: Product[] = [
@@ -47,6 +50,7 @@ const getCategoryGradient = (cat: string | null) => {
     case 'Automation': return 'from-amber-500/15 to-orange-500/5';
     case 'Resources': return 'from-pink-500/15 to-rose-500/5';
     case 'Portfolio': return 'from-violet-500/15 to-purple-500/5';
+    case '3D Templates': return 'from-fuchsia-500/15 to-indigo-500/5';
     default: return 'from-primary/10 to-transparent';
   }
 };
@@ -58,6 +62,7 @@ const getCategoryBorder = (cat: string | null) => {
     case 'Automation': return 'border-amber-500/20 hover:border-amber-500/40';
     case 'Resources': return 'border-pink-500/20 hover:border-pink-500/40';
     case 'Portfolio': return 'border-violet-500/20 hover:border-violet-500/40';
+    case '3D Templates': return 'border-fuchsia-500/20 hover:border-fuchsia-500/40';
     default: return 'border-primary/20 hover:border-primary/40';
   }
 };
@@ -69,6 +74,7 @@ const getCategoryColor = (cat: string | null) => {
     case 'Automation': return '#f59e0b';
     case 'Resources': return '#ec4899';
     case 'Portfolio': return '#8b5cf6';
+    case '3D Templates': return '#d946ef';
     default: return '#a855f7';
   }
 };
@@ -77,6 +83,8 @@ export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { isAdmin } = useAuth();
   const { handlePurchaseWithDetails, processing } = useRazorpay();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const navigate = useNavigate();
@@ -85,10 +93,41 @@ export default function Shop() {
     fetchProducts();
   }, []);
 
+  // Products are only downloadable through this signed, server-checked link —
+  // free items and admins skip Razorpay entirely; everyone else must have a paid purchase on record.
+  const downloadProductFile = async (product: Product) => {
+    setDownloadingId(product.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/get-product-file`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ product_id: product.id }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data?.file_url) {
+        toast.error(data?.error || 'Download failed. Please try again.');
+        return;
+      }
+
+      toast.success(isAdmin ? 'Admin download ready 🎉' : 'Download ready 🎉');
+      window.location.href = data.file_url;
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   const fetchProducts = async () => {
     const { data: productsData } = await supabase
       .from('products')
-      .select('id, title, description, price, image_url, category, download_count, file_url')
+      .select('id, title, description, price, image_url, category, download_count')
       .eq('is_active', true);
 
     const { data: materialsData } = await supabase
@@ -229,7 +268,11 @@ export default function Shop() {
                       )}
 
                       {/* Price badge overlay */}
-                      {product.price === 0 ? (
+                      {isAdmin && product.source === 'product' && product.price > 0 ? (
+                        <span className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-emerald-500/90 text-white text-xs font-bold shadow-lg flex items-center gap-1">
+                          <ShieldCheck className="w-3 h-3" /> Admin Free
+                        </span>
+                      ) : product.price === 0 ? (
                         <span className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-green-500/90 text-white text-xs font-bold shadow-lg">
                           FREE
                         </span>
@@ -282,17 +325,28 @@ export default function Shop() {
                     <div onClick={(e) => e.stopPropagation()}>
                       <GlowButton
                         className="w-full font-semibold"
-                        disabled={processing}
+                        disabled={processing || downloadingId === product.id}
                         onClick={() => {
                           if (['Templates', 'Portfolio'].includes(product.category || '') && product.source === 'material') {
                             navigate(`/shop/${product.id}`);
+                          } else if (product.source === 'product' && (isAdmin || product.price === 0)) {
+                            // Admins skip payment for every product; regular users skip it only for free ones.
+                            downloadProductFile(product);
                           } else {
                             setSelectedProduct(product);
                           }
                         }}
                       >
-                        {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-                        {product.price === 0 ? '🎁 Get Free' : '🛒 Buy Now'}
+                        {processing || downloadingId === product.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : isAdmin && product.source === 'product' && product.price > 0 ? (
+                          <ShieldCheck className="w-4 h-4" />
+                        ) : (
+                          <ShoppingCart className="w-4 h-4" />
+                        )}
+                        {isAdmin && product.source === 'product' && product.price > 0
+                          ? '🛡️ Admin Download'
+                          : product.price === 0 ? '🎁 Get Free' : '🛒 Buy Now'}
                       </GlowButton>
                     </div>
                   </div>

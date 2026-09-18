@@ -149,7 +149,24 @@ Deno.serve(async (req) => {
       amount || 0
     );
 
-    return new Response(JSON.stringify({ success: true }), {
+    // Look up the purchased product's file and hand back a short-lived signed download link
+    let fileUrl: string | null = null;
+    if (product_name) {
+      const { data: product } = await adminClient
+        .from("products")
+        .select("file_url")
+        .eq("title", product_name)
+        .maybeSingle();
+
+      if (product?.file_url) {
+        const { data: signed } = await adminClient.storage
+          .from("product-files")
+          .createSignedUrl(product.file_url, 600);
+        fileUrl = signed?.signedUrl || null;
+      }
+    }
+
+    return new Response(JSON.stringify({ success: true, file_url: fileUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

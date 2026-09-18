@@ -96,7 +96,8 @@ export function useRazorpay() {
             }
 
             toast.success('Payment Successful 🎉');
-            const fileParam = fileUrl ? `&file_url=${encodeURIComponent(fileUrl)}` : '';
+            const resolvedFileUrl = verifyData.file_url || fileUrl;
+            const fileParam = resolvedFileUrl ? `&file_url=${encodeURIComponent(resolvedFileUrl)}` : '';
             window.location.href = `/success?product=${encodeURIComponent(productName)}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&amount=${price}&name=${encodeURIComponent(userName)}&mobile=${encodeURIComponent(userMobile)}${fileParam}`;
           } catch {
             toast.error('Verification error. Contact support.');

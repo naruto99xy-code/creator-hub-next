@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.razorpay-webhook]
 verify_jwt = false
+
+[functions.get-product-file]
+verify_jwt = false
